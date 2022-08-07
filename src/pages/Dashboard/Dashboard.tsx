@@ -2,7 +2,7 @@ import Sensors from "../../components/Sensors/Sensors";
 import { useState, useEffect } from "react";
 import { Card } from "primereact/card";
 import "./Dashboard.css";
-import TemperatureGraph from "../../components/TemperatureGraph/TemperatureGraph";
+import TemperatureChart from "../../components/TemperatureChart/TemperatureChart";
 import { FaVideo, FaUsers, FaExclamationCircle } from "react-icons/fa";
 const Dashboard = () => {
   const [favoritesIsShown, setFavoritesIsShown] = useState(false);
@@ -29,9 +29,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     getSensors();
-    console.log("sensors", sensors);
-    console.log("error:", error);
-    console.log("load:", isLoading);
   }, []);
   useEffect(() => {}, [sensors]);
   const header = <p className="p-card-title">SENSOR TEMPERATURES</p>;
@@ -56,7 +53,7 @@ const Dashboard = () => {
         </div>
       </div>
       <Card header={header}>
-        <TemperatureGraph />
+        <TemperatureChart />
       </Card>
 
       <div>{!isLoading && !error && <Sensors items={sensors} />} </div>

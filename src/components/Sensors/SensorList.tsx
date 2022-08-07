@@ -39,13 +39,12 @@ const SensorList = ({ items }: { items: any }) => {
   const [sensors, setSensors] = useState([]);
   const [lazyParams, setLazyParams] = useState({
     first: 0,
-    rows: 5,
+    rows: 100,
     page: 1,
     sortField: null,
     sortOrder: null,
   });
 
-  console.log("sensors:", sensors);
   // const customerService = new CustomerService();
 
   let loadLazyTimeout = null;
@@ -63,7 +62,7 @@ const SensorList = ({ items }: { items: any }) => {
 
     //imitate delay of a backend call
     loadLazyTimeout = setTimeout(() => {
-      setTotalRecords(items.length);
+      setTotalRecords(items?.length);
       setSensors(items);
       setLoading(false);
     }, Math.random() * 1000 + 250);
