@@ -1,7 +1,8 @@
-import Sensors from "../Sensors/Sensors";
+import Sensors from "../../components/Sensors/Sensors";
 import { Container, Header, Content, Footer } from "rsuite";
 import { FlexboxGrid, Col } from "rsuite";
 import { useState, useEffect } from "react";
+import "./Dashboard.css";
 
 const Dashboard = () => {
   const [favoritesIsShown, setFavoritesIsShown] = useState(false);
@@ -36,19 +37,37 @@ const Dashboard = () => {
 
   return (
     <>
-      <div>
-        <FlexboxGrid justify="space-around">
-          <FlexboxGrid.Item as={Col} colspan={24} md={6}>
-            {sensorsCount}
-          </FlexboxGrid.Item>
-          <FlexboxGrid.Item as={Col} colspan={24} md={6}>
-            colspan={24} md={6}
-          </FlexboxGrid.Item>
-          <FlexboxGrid.Item as={Col} colspan={24} md={6} smHidden>
-            colspan={24} md={6} smHidden
-          </FlexboxGrid.Item>
-        </FlexboxGrid>
+      <div className="show-container">
+        <Container>
+          <FlexboxGrid justify="space-around">
+            <Content>
+              <FlexboxGrid.Item as={Col} colspan={24} md={6}>
+                <>
+                  <h4>TOTAL SENSOR</h4>
+                  {sensorsCount}
+                </>
+              </FlexboxGrid.Item>
+            </Content>
+            <Content>
+              <FlexboxGrid.Item as={Col} colspan={24} md={6}>
+                <>
+                  <h4>OPEN ALERTS</h4>
+                  ??
+                </>
+              </FlexboxGrid.Item>
+            </Content>
+            <Content>
+              <FlexboxGrid.Item as={Col} colspan={24} md={6} smHidden>
+                <>
+                  <h4>TOTAL CUSTOMERS</h4>
+                  ??
+                </>
+              </FlexboxGrid.Item>
+            </Content>
+          </FlexboxGrid>
+        </Container>
       </div>
+
       <div>Sensor Graphics</div>
       <div>{!isLoading && !error && <Sensors items={sensors} />} </div>
     </>

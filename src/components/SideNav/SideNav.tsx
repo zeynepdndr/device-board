@@ -10,9 +10,10 @@ import GroupIcon from "@rsuite/icons/legacy/Group";
 import HomeIcon from "@rsuite/icons/legacy/Home";
 
 import "rsuite/dist/rsuite.css";
-import nbtLogo from "../../../assests/img/logo.jpg";
+import nbtLogo from "../../assests/img/logo.jpg";
 
 import styles from "./SideNav.module.css";
+import Dashboard from "../../pages/Dashboard/Dashboard";
 
 const headerStyles = {
   padding: 18,
@@ -48,14 +49,19 @@ const SideNav = () => {
         </Sidenav.Header>
         <Sidenav.Body>
           <Nav activeKey={activeKey} onSelect={setActiveKey}>
-            <Nav.Item eventKey="1" icon={<HomeIcon />}>
-              <Link to={"/"}>HOME</Link>
+            <Nav.Item eventKey="1" icon={<HomeIcon />} as={Link} to="/">
+              HOME
             </Nav.Item>
-            <Nav.Item eventKey="2" icon={<DashboardIcon />}>
-              <Link to={"/dashboard"}>DASHBOARD</Link>
+            <Nav.Item
+              eventKey="2"
+              icon={<DashboardIcon />}
+              as={Link}
+              to="/dashboard"
+            >
+              DASHBOARD
             </Nav.Item>
-            <Nav.Item eventKey="3" icon={<GroupIcon />}>
-              <Link to={"/sensor"}>SENSOR</Link>
+            <Nav.Item eventKey="3" icon={<GroupIcon />} as={Link} to="/sensor">
+              SENSOR
             </Nav.Item>
           </Nav>
         </Sidenav.Body>

@@ -31,19 +31,16 @@
 .rs-content,
 .rs-footer,
 .rs-sidebar {
-  background-color: #3498ff;
-  color: #fff;
+  /* background-color: pink; */
+  /* color: #fff; */
   text-align: center;
+  color: #000;
+  position: relative;
 }
 
-.rs-header,
-.rs-footer {
-  line-height: 56px;
-  background-color: #59afff;
-}
 .rs-content {
   line-height: 120px;
-  background-color: #80ddff;
+  /* background-color: plum; */
 }
 .rs-sidebar {
   line-height: 120px;
