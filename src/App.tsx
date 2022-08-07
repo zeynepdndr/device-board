@@ -4,7 +4,8 @@ import SideNav from "./components/SideNav/SideNav";
 import "./App.css";
 import "rsuite/dist/rsuite.css";
 import Dashboard from "./pages/Dashboard/Dashboard";
-import Sensor from "./components/Sensors/SensorItem";
+import SensorForm from "./components/SensorForm/SensorForm";
+import Sensor from "./pages/Sensor/Sensor";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 {/* <Route path="/sensor" element={<Sensor />} /> */}
                 <Route path="/" element={null} />
+                <Route path="/add-sensor" element={<SensorForm />} />
               </Routes>
             </Content>
           </Container>

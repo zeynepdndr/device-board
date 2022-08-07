@@ -1,6 +1,8 @@
 import SensorItem from "./SensorItem";
+import { Link } from "react-router-dom";
 
 const SensorList = ({ items }: { items: any }) => {
+  const addSensorHandler = (sensor: any) => {};
   let sensorContent: React.ReactElement = (
     <p className="books-filter__empty">No sensor found!</p>
   );
@@ -17,7 +19,9 @@ const SensorList = ({ items }: { items: any }) => {
   }
   return (
     <>
-      <div>Add New Sensor</div>
+      <div onClick={addSensorHandler}>
+        <Link to={"/add-sensor"}>Add New Sensor</Link>
+      </div>
       {sensorContent}
     </>
   );

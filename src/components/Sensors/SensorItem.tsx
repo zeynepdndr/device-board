@@ -3,6 +3,7 @@ const SensorItem = ({ key, item }: { key: any; item: any }) => {
     <>
       <h1 key={key}>{item.device_id}</h1>
       <button>EDIT</button>
+      <h2>Details</h2>
     </>
   );
 };
