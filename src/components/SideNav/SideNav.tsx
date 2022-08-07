@@ -2,14 +2,6 @@ import React from "react";
 // import { Link } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import { Sidenav, Nav } from "rsuite";
-import DashboardIcon from "@rsuite/icons/legacy/Dashboard";
-import { Container, Header, Content, Footer } from "rsuite";
-
-import GroupIcon from "@rsuite/icons/legacy/Group";
-import HomeIcon from "@rsuite/icons/legacy/Home";
-
-import "rsuite/dist/rsuite.css";
 import nbtLogo from "../../assests/img/logo.jpg";
 
 import styles from "./SideNav.module.css";
@@ -31,23 +23,12 @@ const SideNav = () => {
 
   return (
     <div style={{ width: 240 }}>
-      <Sidenav expanded={expanded} defaultOpenKeys={["3", "4"]}>
-        <Sidenav.Toggle
-          expanded={expanded}
-          onToggle={(expanded: any) => setExpanded(expanded)}
-        />
-        <Sidenav.Header>
-          <div style={{ height: 56 }}>
-            <span style={{ marginLeft: 12 }}>
-              <img
-                src={nbtLogo}
-                alt="Next Big Thing"
-                style={{ width: "5rem" }}
-              />
-            </span>
-          </div>
-        </Sidenav.Header>
-        <Sidenav.Body>
+      <div style={{ height: 56 }}>
+        <span style={{ marginLeft: 12 }}>
+          <img src={nbtLogo} alt="Next Big Thing" style={{ width: "5rem" }} />
+        </span>
+      </div>
+      {/* 
           <Nav activeKey={activeKey} onSelect={setActiveKey}>
             <Nav.Item eventKey="1" icon={<HomeIcon />} as={Link} to="/">
               HOME
@@ -65,7 +46,7 @@ const SideNav = () => {
             </Nav.Item>
           </Nav>
         </Sidenav.Body>
-      </Sidenav>
+      </Sidenav>*/}
     </div>
   );
 };

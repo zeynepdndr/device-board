@@ -1,10 +1,9 @@
 import Sensors from "../../components/Sensors/Sensors";
-import { Container, Header, Content, Footer } from "rsuite";
-import { FlexboxGrid, Col } from "rsuite";
 import { useState, useEffect } from "react";
+import { Card } from "primereact/card";
 import "./Dashboard.css";
 import TemperatureGraph from "../../components/TemperatureGraph/TemperatureGraph";
-
+import { FaVideo, FaUsers, FaExclamationCircle } from "react-icons/fa";
 const Dashboard = () => {
   const [favoritesIsShown, setFavoritesIsShown] = useState(false);
   const [sensors, setSensors] = useState();
@@ -35,43 +34,31 @@ const Dashboard = () => {
     console.log("load:", isLoading);
   }, []);
   useEffect(() => {}, [sensors]);
-
+  const header = <p className="p-card-title">SENSOR TEMPERATURES</p>;
   return (
     <>
-      <div className="show-container">
-        <Container>
-          <FlexboxGrid justify="space-around">
-            <Content>
-              <FlexboxGrid.Item as={Col} colspan={24} md={6}>
-                <>
-                  <h4>TOTAL SENSOR</h4>
-                  {sensorsCount}
-                </>
-              </FlexboxGrid.Item>
-            </Content>
-            <Content>
-              <FlexboxGrid.Item as={Col} colspan={24} md={6}>
-                <>
-                  <h4>OPEN ALERTS</h4>
-                  ??
-                </>
-              </FlexboxGrid.Item>
-            </Content>
-            <Content>
-              <FlexboxGrid.Item as={Col} colspan={24} md={6} smHidden>
-                <>
-                  <h4>TOTAL CUSTOMERS</h4>
-                  ??
-                </>
-              </FlexboxGrid.Item>
-            </Content>
-          </FlexboxGrid>
-        </Container>
+      <div className="card">
+        <div className="flex card-container indigo-container">
+          <div className="flex-1 bg-indigo-500 text-white font-bold text-center p-4 border-round">
+            <FaVideo />
+            <h4>TOTAL SENSOR</h4>
+            {sensorsCount}
+          </div>
+          <div className="flex-1  bg-indigo-500 text-white font-bold text-center p-4 border-round mx-4">
+            <FaExclamationCircle />
+            <h4>OPEN ALERTS</h4>AiOutlineAlert ??
+          </div>
+          <div className="flex-1  bg-indigo-500 text-white font-bold text-center p-4 border-round">
+            <FaUsers />
+            <h4>TOTAL CUSTOMERS</h4>
+            ??
+          </div>
+        </div>
       </div>
-
-      <div>
+      <Card header={header}>
         <TemperatureGraph />
-      </div>
+      </Card>
+
       <div>{!isLoading && !error && <Sensors items={sensors} />} </div>
     </>
   );
