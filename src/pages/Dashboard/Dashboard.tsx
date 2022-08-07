@@ -3,6 +3,7 @@ import { Container, Header, Content, Footer } from "rsuite";
 import { FlexboxGrid, Col } from "rsuite";
 import { useState, useEffect } from "react";
 import "./Dashboard.css";
+import TemperatureGraph from "../../components/TemperatureGraph/TemperatureGraph";
 
 const Dashboard = () => {
   const [favoritesIsShown, setFavoritesIsShown] = useState(false);
@@ -68,7 +69,9 @@ const Dashboard = () => {
         </Container>
       </div>
 
-      <div>Sensor Graphics</div>
+      <div>
+        <TemperatureGraph />
+      </div>
       <div>{!isLoading && !error && <Sensors items={sensors} />} </div>
     </>
   );

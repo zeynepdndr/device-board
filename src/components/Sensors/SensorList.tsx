@@ -15,6 +15,11 @@ const SensorList = ({ items }: { items: any }) => {
       />
     ));
   }
-  return <>{sensorContent}</>;
+  return (
+    <>
+      <div>Add New Sensor</div>
+      {sensorContent}
+    </>
+  );
 };
 export default SensorList;
