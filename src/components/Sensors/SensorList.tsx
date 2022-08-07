@@ -32,6 +32,7 @@ import { useState, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import { Link } from "react-router-dom";
 
 const SensorList = ({ items }: { items: any }) => {
   const [loading, setLoading] = useState(false);
@@ -86,8 +87,12 @@ const SensorList = ({ items }: { items: any }) => {
         <Button
           label="Details"
           className="p-button-outlined p-button-info mx-5"
-        />
-        <Button label="EDIT" className="p-button-outlined p-button-success" />
+        >
+          <Link to={`/sensor/${rowData.device_id}`}>Sensor</Link>
+        </Button>
+        <Button label="EDIT" className="p-button-outlined p-button-success">
+          <Link to={"/add-sensor/:device_id"}>Sensor</Link>
+        </Button>
       </>
     );
   };

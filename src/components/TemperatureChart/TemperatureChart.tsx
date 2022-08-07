@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Chart } from "primereact/chart";
-import { unixTimeToDate, sortByTime } from "../../utils/timeConverter";
+import { unixTimeToDate, sortByTime } from "../../utils/helperFunctions";
 
 const TemperatureChart = () => {
   const [favoritesIsShown, setFavoritesIsShown] = useState(false);
@@ -21,7 +21,7 @@ const TemperatureChart = () => {
     const loadedStatsTimePoints_1 = [];
     const loadedStatsTempPoints_1 = [];
 
-    const sortedByTime_1 = data[0].stats.sort(sortByTime);
+    const sortedByTime_1 = data[0]?.stats.sort(sortByTime);
 
     for (const key in sortedByTime_1) {
       loadedStatsTimePoints_1.push(unixTimeToDate(sortedByTime_1[key].time));
@@ -35,7 +35,7 @@ const TemperatureChart = () => {
     const loadedStatsTimePoints_2 = [];
     const loadedStatsTempPoints_2 = [];
 
-    const sortedByTime_2 = data[1].stats.sort(sortByTime);
+    const sortedByTime_2 = data[1]?.stats.sort(sortByTime);
 
     for (const key in sortedByTime_2) {
       loadedStatsTimePoints_2.push(unixTimeToDate(sortedByTime_2[key].time));

@@ -52,9 +52,9 @@ function App() {
           <Routes>
             {/* {getRoutes(routes)} */}
             <Route path="dashboard" element={<Dashboard />} />
-            {/* <Route path="sensor" element={<Sensor />} /> */}
+            <Route path="sensor/:device_id" element={<Sensor />} />
             <Route path="/" element={null} />
-            <Route path="add-sensor" element={<SensorForm />} />
+            <Route path="add-sensor/:device_id" element={<SensorForm />} />
           </Routes>
         </div>
       </Router>
