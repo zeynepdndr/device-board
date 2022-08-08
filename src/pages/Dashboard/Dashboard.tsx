@@ -2,7 +2,7 @@ import Sensors from "../../components/Sensors/Sensors";
 import { useState, useEffect } from "react";
 import { Card } from "primereact/card";
 import "./Dashboard.css";
-import TemperatureChart from "../../components/TemperatureChart/TemperatureChart";
+import SensorTemperatures from "../../components/Charts/SensorTemperatures/SensorTemperatures";
 import { FaVideo, FaUsers, FaExclamationCircle } from "react-icons/fa";
 const Dashboard = () => {
   const [favoritesIsShown, setFavoritesIsShown] = useState(false);
@@ -16,7 +16,6 @@ const Dashboard = () => {
     fetch("http://localhost:3009/sensor")
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
         setSensors(json.results);
         setIsLoading(false);
         setSensorCounts(json.paging.count);
@@ -53,7 +52,7 @@ const Dashboard = () => {
         </div>
       </div>
       <Card header={header}>
-        <TemperatureChart />
+        <SensorTemperatures />
       </Card>
 
       <div>{!isLoading && !error && <Sensors items={sensors} />} </div>

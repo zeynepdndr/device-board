@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { Chart } from "primereact/chart";
-import { unixTimeToDate, sortByTime } from "../../utils/helperFunctions";
+import { unixTimeToDate, sortByTime } from "../../../utils/helperFunctions";
 
-const TemperatureChart = () => {
+const TemperatureDaily = () => {
   const [favoritesIsShown, setFavoritesIsShown] = useState(false);
   const [sensorStats, setSensorStats] = useState([]);
   const [error, setError] = useState(null);
@@ -79,8 +79,6 @@ const TemperatureChart = () => {
 
       const data = await response.json();
       setData(data.results);
-
-      console.log("data:", data);
     } catch (error: any) {
       setError(error.message);
     }
@@ -265,4 +263,4 @@ const TemperatureChart = () => {
   );
 };
 
-export default TemperatureChart;
+export default TemperatureDaily;
