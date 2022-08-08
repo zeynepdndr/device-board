@@ -1,13 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Divider } from "primereact/divider";
-import "primeicons/primeicons.css";
-import "primereact/resources/themes/lara-light-indigo/theme.css";
-import "primereact/resources/primereact.css";
-import "primeflex/primeflex.css";
-// import "../../index.css";
-
 import { Splitter, SplitterPanel } from "primereact/splitter";
+import { ProgressSpinner } from "primereact/progressspinner";
 import WeeklyAverageTemp from "../../components/parts/Charts/WeeklyAverageTemp/WeeklyAverageTemp";
 import TemperatureDaily from "../../components/parts/Charts/TemperatureDaily/TemperatureDaily";
 import SystemLog from "../../components/parts/SystemLog/SystemLog";
@@ -18,10 +13,8 @@ const Sensor = () => {
   const param = useParams();
 
   const [deviceId] = useState(param);
-  const [favoritesIsShown, setFavoritesIsShown] = useState(false);
   const [sensorData, setSensorData] = useState<any>();
   const [error, setError] = useState(false);
-  const [sensorDataCount, setSensorCounts] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const getSensorData = () => {
@@ -31,45 +24,77 @@ const Sensor = () => {
       .then((json) => {
         setSensorData(json.result);
         setIsLoading(false);
-        setSensorCounts(json.paging.count);
       })
       .catch((err) => {
         setIsLoading(false);
         setError(true);
+        console.log("err:", err);
       });
   };
 
   useEffect(() => {
     getSensorData();
   }, []);
-  useEffect(() => {
-    console.log("sensor:", sensorData);
-  }, [sensorData]);
+
+  let messageData = <div>No data found!</div>;
+  let downTimeData = <div>No data found!</div>;
+  let alertData = <div>No data found!</div>;
+
+  const loadingStatus = (onContent: boolean) => (
+    <ProgressSpinner
+      style={{
+        width: `${onContent ? "50px" : "30px"}`,
+        height: `${onContent ? "50px" : "30px"}`,
+        margin: 0,
+      }}
+      strokeWidth="7"
+      fill={onContent ? `var(--surface-ground)` : undefined}
+      animationDuration=".8s"
+    />
+  );
+
+  if (sensorData) {
+    messageData = <p>{sensorData?.overview?.total_messages}</p>;
+    downTimeData = <p>{sensorData?.overview?.down_time}</p>;
+    alertData = <p>{sensorData?.overview?.alerts}</p>;
+  }
+
+  if (error) {
+    messageData = <p>Something went wrong!</p>;
+    downTimeData = <p>Something went wrong!</p>;
+    alertData = <p>Something went wrong!</p>;
+  }
+
+  if (isLoading) {
+    messageData = loadingStatus(false);
+    downTimeData = loadingStatus(false);
+    alertData = loadingStatus(false);
+  }
 
   return (
     <div>
       <div className="card">
-        <Splitter style={{ height: "300px" }} className="mb-5">
+        <Splitter>
           <SplitterPanel className="p-2">
-            <div>
-              <div>
+            <div className="card">
+              <div className="flex justify-content-around flex-wrap align-items-center text-black m-2 ">
                 <h4>TOTAL MESSAGES</h4>
-                {sensorData?.overview?.total_messages}
+                {messageData}
               </div>
               <Divider />
-              <div>
+              <div className="flex justify-content-around flex-wrap align-items-center text-black m-2">
                 <h4>DOWN TIME</h4>
-                {sensorData?.overview?.down_time}
+                {downTimeData}
               </div>
               <Divider />
-              <div>
+              <div className="flex justify-content-around flex-wrap align-items-center text-black m-2">
                 <h4>ALERTS</h4>
-                {sensorData?.overview?.alerts}
+                {alertData}
               </div>
             </div>
           </SplitterPanel>
-          <SplitterPanel className="flex align-items-center justify-content-center">
-            <WeeklyAverageTemp deviceId={deviceId} />
+          <SplitterPanel>
+            <WeeklyAverageTemp deviceId={deviceId.toLocaleString()} />
           </SplitterPanel>
         </Splitter>
       </div>

@@ -1,77 +1,25 @@
-// import SensorItem from "./SensorItem";
-// import { Link } from "react-router-dom";
-
-// const SensorList = ({ items }: { items: any }) => {
-//   const addSensorHandler = (sensor: any) => {};
-//   let sensorContent: React.ReactElement = (
-//     <p className="books-filter__empty">No sensor found!</p>
-//   );
-
-//   if (items?.length > 0) {
-//     sensorContent = items.map((item: any) => (
-//       <SensorItem
-//         key={item.device_id}
-//         item={item}
-//         // onEdit={editBookHandler}
-//         // onDelete={deleteBookHandler}
-//       />
-//     ));
-//   }
-//   return (
-//     <>
-//       <div onClick={addSensorHandler}>
-//         <Link to={"/add-sensor"}>Add New Sensor</Link>
-//       </div>
-//       {sensorContent}
-//     </>
-//   );
-// };
-// export default SensorList;
-
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
-import { Link } from "react-router-dom";
 
 const SensorList = ({ items }: { items: any }) => {
   const [loading, setLoading] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
-  const [lazyParams, setLazyParams] = useState({
-    first: 0,
-    rows: 100,
-    page: 1,
-    sortField: null,
-    sortOrder: null,
-  });
+  const [sensors, setSensors] = useState();
 
-  let loadLazyTimeout: any = null;
-
-  useEffect(() => {
-    loadLazyData();
-  }, [lazyParams]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const loadLazyData = () => {
+  const setTableData = () => {
     setLoading(true);
 
-    if (loadLazyTimeout) {
-      clearTimeout(loadLazyTimeout);
-    }
-
-    //imitate delay of a backend call
-    loadLazyTimeout = setTimeout(() => {
-      setTotalRecords(items?.length);
-      setLoading(false);
-    }, Math.random() * 1000 + 250);
+    setTotalRecords(items?.length);
+    setSensors(items);
+    setLoading(false);
   };
 
-  const onPage = (event: any) => {
-    setLazyParams(event);
-  };
+  const onPage = (event: any) => {};
 
-  const onSort = (event: any) => {
-    setLazyParams(event);
-  };
+  const onSort = (event: any) => {};
 
   const statusTemplate = (rowData: any) => {
     return (
@@ -80,35 +28,40 @@ const SensorList = ({ items }: { items: any }) => {
           label="Options"
           className="p-button-outlined p-button-secondary"
         />
-        <Button
-          label="Details"
-          className="p-button-outlined p-button-info mx-5"
+
+        <Link to={`/sensor/${rowData.device_id}`}>
+          <Button
+            label="Details"
+            className="p-button-outlined p-button-info mx-5"
+          />
+        </Link>
+
+        <Link
+          to={"/add-sensor/:device_id"}
+          className="p-button-outlined p-button-success"
         >
-          <Link to={`/sensor/${rowData.device_id}`}>Sensor</Link>
-        </Button>
-        <Button label="EDIT" className="p-button-outlined p-button-success">
-          <Link to={"/add-sensor/:device_id"}>Sensor</Link>
-        </Button>
+          <Button label="EDIT" className="p-button-outlined p-button-success" />
+        </Link>
       </>
     );
   };
 
+  useEffect(() => {
+    setTableData();
+  }, [items]);
+
   return (
     <div className="pt-3 pb-4 ">
       <DataTable
-        value={items}
-        // lazy
+        value={sensors}
         filterDisplay="row"
         responsiveLayout="scroll"
         dataKey="id"
         paginator
-        // first={lazyParams.first}
         rows={5}
         totalRecords={totalRecords}
         onPage={onPage}
         onSort={onSort}
-        // sortField={lazyParams.sortField}
-        sortOrder={lazyParams.sortOrder}
         loading={loading}
       >
         <Column headerStyle={{ width: "3em" }}></Column>

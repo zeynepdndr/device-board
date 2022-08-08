@@ -2,19 +2,21 @@ import { useState, useEffect, useCallback } from "react";
 import { Chart } from "primereact/chart";
 import { unixTimeToDate, sortByTime } from "../../../../utils/DateUtil";
 
-const WeeklyAverageTemp = ({ deviceId }: { deviceId: any }) => {
-  const [sensorStats, setSensorStats] = useState([]);
+const WeeklyAverageTemp = (props: any) => {
+  const { deviceId } = props;
   const [error, setError] = useState(null);
-  const [sensorStatsCount, setSensorCounts] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loadedStatsTime_1, setLoadedStatsTime_1] = useState<any[]>([]);
   const [loadedStatsTemp_1, setLoadedStatsTemp_1] = useState<any[]>([]);
-  const [data, setData] = useState<any[]>([]);
+  // const [sensorId, setSensorId] = useState<string>(deviceId);
+  const [sensorStats, setSensorStats] = useState<any[]>([]);
+  const [lineData, setLineData] = useState<any>();
+
   const dataPointValuesHandler = () => {
     const loadedStatsTimePoints_1 = [];
     const loadedStatsTempPoints_1 = [];
 
-    const sortedByTime_1 = data?.sort(sortByTime);
+    const sortedByTime_1 = sensorStats?.sort(sortByTime);
 
     for (const key in sortedByTime_1) {
       loadedStatsTimePoints_1.push(unixTimeToDate(sortedByTime_1[key].time));
@@ -24,26 +26,12 @@ const WeeklyAverageTemp = ({ deviceId }: { deviceId: any }) => {
     setLoadedStatsTime_1(loadedStatsTempPoints_1);
   };
 
-  const [lineData, setLineData] = useState({
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "Third Dataset",
-        data: [12, 51, 62, 33, 21, 62, 45],
-        fill: true,
-        borderColor: "#FFA726",
-        tension: 0.4,
-        backgroundColor: "rgba(255,167,38,0.2)",
-      },
-    ],
-  });
-
   const getSensorsStats = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
       const response = await fetch(
-        `http://localhost:3009/sensor/${deviceId}/stats/weekly`
+        `http://localhost:3009/sensor/${props.deviceId}/stats/weekly`
       );
 
       if (!response.ok) {
@@ -51,7 +39,8 @@ const WeeklyAverageTemp = ({ deviceId }: { deviceId: any }) => {
       }
 
       const data = await response.json();
-      setData(data.results);
+      setSensorStats(data.results);
+      // setSensorId(deviceId);
     } catch (error: any) {
       setError(error.message);
     }
@@ -61,14 +50,13 @@ const WeeklyAverageTemp = ({ deviceId }: { deviceId: any }) => {
     getSensorsStats();
   }, []);
 
-  useEffect(() => {}, [sensorStats]);
   useEffect(() => {
     dataPointValuesHandler();
     setLineData({
       labels: loadedStatsTime_1,
       datasets: [
         {
-          label: data && data[0] != undefined ? data[0].device_id : "default",
+          label: props.deviceId,
           data: loadedStatsTemp_1,
           fill: true,
           borderColor: "#FFA726",
@@ -77,7 +65,7 @@ const WeeklyAverageTemp = ({ deviceId }: { deviceId: any }) => {
         },
       ],
     });
-  }, [data]);
+  }, [sensorStats]);
 
   const getLightTheme = () => {
     let basicOptions = {
@@ -162,10 +150,11 @@ const WeeklyAverageTemp = ({ deviceId }: { deviceId: any }) => {
     };
   };
 
-  const { basicOptions, multiAxisOptions } = getLightTheme();
+  const { basicOptions } = getLightTheme();
+
   return (
     <div className="card">
-      <h5>Line Styles</h5>
+      <h5>WEEKLY AVERAGE TEMP</h5>
       <Chart
         type="line"
         data={lineData}

@@ -23,7 +23,6 @@ export const sortByTime = (a: any, b: any) => {
 };
 
 export const timeFromNow = (utcMiliSeconds: any) => {
-  console.log("ghdfhsfghs", utcMiliSeconds);
   if (!utcMiliSeconds) return null;
   return moment(utcMiliSeconds / 1).fromNow();
 };
