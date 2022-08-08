@@ -13,6 +13,7 @@ import WeeklyAverageTemp from "../../components/Charts/WeeklyAverageTemp/WeeklyA
 const Sensor = () => {
   const param = useParams();
 
+  const [deviceId] = useState(param);
   const [favoritesIsShown, setFavoritesIsShown] = useState(false);
   const [sensorData, setSensorData] = useState<any>();
   const [error, setError] = useState(false);
@@ -44,7 +45,6 @@ const Sensor = () => {
   return (
     <div>
       <div className="card">
-        <h5>Horizontal</h5>
         <Splitter style={{ height: "300px" }} className="mb-5">
           <SplitterPanel className="p-2">
             <div>
@@ -65,7 +65,7 @@ const Sensor = () => {
             </div>
           </SplitterPanel>
           <SplitterPanel className="flex align-items-center justify-content-center">
-            <WeeklyAverageTemp dataPoints={[sensorData]} />
+            <WeeklyAverageTemp deviceId={deviceId} />
           </SplitterPanel>
         </Splitter>
       </div>
