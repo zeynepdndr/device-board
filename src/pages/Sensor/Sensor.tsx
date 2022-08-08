@@ -9,6 +9,9 @@ import "primeflex/primeflex.css";
 
 import { Splitter, SplitterPanel } from "primereact/splitter";
 import WeeklyAverageTemp from "../../components/Charts/WeeklyAverageTemp/WeeklyAverageTemp";
+import TemperatureDaily from "../../components/Charts/TemperatureDaily/TemperatureDaily";
+import SystemLog from "../../components/SystemLog/SystemLog";
+import Activity from "../../components/Activity/Activity";
 
 const Sensor = () => {
   const param = useParams();
@@ -68,6 +71,19 @@ const Sensor = () => {
             <WeeklyAverageTemp deviceId={deviceId} />
           </SplitterPanel>
         </Splitter>
+      </div>
+      <div className="card">
+        <TemperatureDaily />
+      </div>
+      <div className="card">
+        <div className="flex card-container indigo-container">
+          <div className="flex-1  p-4 border-round text-black">
+            <SystemLog deviceId={deviceId} />
+          </div>
+          <div className="flex-1  p-4 border-round ">
+            <Activity />
+          </div>
+        </div>
       </div>
     </div>
   );

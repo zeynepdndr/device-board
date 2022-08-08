@@ -12,7 +12,7 @@ export const unixTimeToDate = (utcMiliSeconds: any) => {
   });
 };
 
-export function sortByTime(a: any, b: any) {
+export const sortByTime = (a: any, b: any) => {
   if (a.time < b.time) {
     return -1;
   }
@@ -20,4 +20,10 @@ export function sortByTime(a: any, b: any) {
     return 1;
   }
   return 0;
-}
+};
+
+export const timeFromNow = (utcMiliSeconds: any) => {
+  console.log("ghdfhsfghs", utcMiliSeconds);
+  if (!utcMiliSeconds) return null;
+  return moment(utcMiliSeconds / 1).fromNow();
+};
