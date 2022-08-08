@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import nbtLogo from "../../assests/img/logo.jpg";
 
 import styles from "./SideNav.module.css";
-import Dashboard from "../../pages/Dashboard/Dashboard";
+import Dashboard from "../../../pages/Dashboard/Dashboard";
 
 const headerStyles = {
   padding: 18,

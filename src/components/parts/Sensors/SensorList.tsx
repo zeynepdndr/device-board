@@ -37,7 +37,6 @@ import { Link } from "react-router-dom";
 const SensorList = ({ items }: { items: any }) => {
   const [loading, setLoading] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
-  const [sensors, setSensors] = useState([]);
   const [lazyParams, setLazyParams] = useState({
     first: 0,
     rows: 100,
@@ -46,9 +45,7 @@ const SensorList = ({ items }: { items: any }) => {
     sortOrder: null,
   });
 
-  // const customerService = new CustomerService();
-
-  let loadLazyTimeout = null;
+  let loadLazyTimeout: any = null;
 
   useEffect(() => {
     loadLazyData();
@@ -57,14 +54,13 @@ const SensorList = ({ items }: { items: any }) => {
   const loadLazyData = () => {
     setLoading(true);
 
-    // if (loadLazyTimeout) {
-    //   clearTimeout(loadLazyTimeout);
-    // }
+    if (loadLazyTimeout) {
+      clearTimeout(loadLazyTimeout);
+    }
 
     //imitate delay of a backend call
     loadLazyTimeout = setTimeout(() => {
       setTotalRecords(items?.length);
-      setSensors(items);
       setLoading(false);
     }, Math.random() * 1000 + 250);
   };

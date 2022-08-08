@@ -1,11 +1,12 @@
-import Sensors from "../../components/Sensors/Sensors";
+import Sensors from "../../components/parts/Sensors/Sensors";
 import { useState, useEffect } from "react";
+import SensorTemperatures from "../../components/parts/Charts/SensorTemperatures/SensorTemperatures";
 import { Card } from "primereact/card";
-import "./Dashboard.css";
-import SensorTemperatures from "../../components/Charts/SensorTemperatures/SensorTemperatures";
 import { FaVideo, FaUsers, FaExclamationCircle } from "react-icons/fa";
+
+import "./Dashboard.css";
+
 const Dashboard = () => {
-  const [favoritesIsShown, setFavoritesIsShown] = useState(false);
   const [sensors, setSensors] = useState();
   const [error, setError] = useState(false);
   const [sensorsCount, setSensorCounts] = useState(null);
@@ -33,8 +34,8 @@ const Dashboard = () => {
   const header = <p className="p-card-title">SENSOR TEMPERATURES</p>;
   return (
     <>
-      <div className="card">
-        <div className="flex card-container indigo-container">
+      <div className="card p-2 mb-4">
+        <div className="flex card-container indigo-container ">
           <div className="flex-1 bg-indigo-500 text-white font-bold text-center p-4 border-round">
             <FaVideo />
             <h4>TOTAL SENSOR</h4>
@@ -51,7 +52,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      <Card header={header}>
+      <Card header={header} className="p-4 mb-4">
         <SensorTemperatures />
       </Card>
 

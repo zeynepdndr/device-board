@@ -1,0 +1,57 @@
+.card {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #00bb7e;
+  padding: 0 1rem;
+  z-index: 999;
+}
+
+.logo {
+  width: 19%;
+  text-decoration: none;
+  color: white;
+  font-weight: 300;
+}
+
+.logo a {
+  font-family: fangsong;
+  font-size: 3.5rem;
+  text-decoration: none;
+  color: white;
+  font-weight: 700;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+  font-weight: 300;
+}
+
+.nav ul {
+  list-style: none;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+}
+
+.nav li {
+  margin-right: 2.3rem;
+}
+
+.nav a {
+  text-decoration: none;
+  font-size: 1.25rem;
+  color: #fcb8d2;
+}
+
+.nav a:hover,
+.nav a:active,
+.nav a.active {
+  color: white;
+}

@@ -1,7 +1,7 @@
 import { Timeline } from "primereact/timeline";
 import { useState, useEffect, useCallback } from "react";
 import { Chart } from "primereact/chart";
-import { sortByTime, timeFromNow } from "../../utils/helperFunctions";
+import { sortByTime, timeFromNow } from "../../../utils/DateUtil";
 
 const SystemLog = ({ deviceId }: { deviceId: any }) => {
   const [sensorStats, setSensorStats] = useState([]);

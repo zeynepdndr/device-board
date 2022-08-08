@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { Chart } from "primereact/chart";
-import { unixTimeToDate, sortByTime } from "../../../utils/helperFunctions";
+import { unixTimeToDate, sortByTime } from "../../../../utils/DateUtil";
 
-const SensorTemperatures = () => {
+const TemperatureDaily = () => {
   const [favoritesIsShown, setFavoritesIsShown] = useState(false);
   const [sensorStats, setSensorStats] = useState([]);
   const [error, setError] = useState(null);
@@ -263,4 +263,4 @@ const SensorTemperatures = () => {
   );
 };
 
-export default SensorTemperatures;
+export default TemperatureDaily;

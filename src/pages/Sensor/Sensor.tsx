@@ -8,10 +8,11 @@ import "primeflex/primeflex.css";
 // import "../../index.css";
 
 import { Splitter, SplitterPanel } from "primereact/splitter";
-import WeeklyAverageTemp from "../../components/Charts/WeeklyAverageTemp/WeeklyAverageTemp";
-import TemperatureDaily from "../../components/Charts/TemperatureDaily/TemperatureDaily";
-import SystemLog from "../../components/SystemLog/SystemLog";
-import Activity from "../../components/Activity/Activity";
+import WeeklyAverageTemp from "../../components/parts/Charts/WeeklyAverageTemp/WeeklyAverageTemp";
+import TemperatureDaily from "../../components/parts/Charts/TemperatureDaily/TemperatureDaily";
+import SystemLog from "../../components/parts/SystemLog/SystemLog";
+import Activity from "../../components/parts/Activity/Activity";
+import { DEVICEURL } from "../../constants/global";
 
 const Sensor = () => {
   const param = useParams();
@@ -25,7 +26,7 @@ const Sensor = () => {
 
   const getSensorData = () => {
     setIsLoading(true);
-    fetch(`http://localhost:3009/sensor/${param.device_id}`)
+    fetch(DEVICEURL + `${param.device_id} `)
       .then((res) => res.json())
       .then((json) => {
         setSensorData(json.result);
