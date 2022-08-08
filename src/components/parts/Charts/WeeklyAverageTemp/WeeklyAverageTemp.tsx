@@ -153,13 +153,13 @@ const WeeklyAverageTemp = (props: any) => {
   const { basicOptions } = getLightTheme();
 
   return (
-    <div className="card">
-      <h5>WEEKLY AVERAGE TEMP</h5>
+    <div className="card p-5">
+      <h5 className="m-0">WEEKLY AVERAGE TEMP</h5>
       <Chart
         type="line"
         data={lineData}
         options={basicOptions}
-        style={{ width: 735, height: 200 }}
+        style={{ width: 735, height: 222 }}
       />
     </div>
   );

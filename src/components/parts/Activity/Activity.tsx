@@ -1,5 +1,5 @@
 const Activity = () => {
-  return <h1>Activity</h1>;
+  return null;
 };
 
 export default Activity;

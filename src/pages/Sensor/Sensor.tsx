@@ -104,9 +104,11 @@ const Sensor = () => {
       <div className="card">
         <div className="flex card-container indigo-container">
           <div className="flex-1  p-4 border-round text-black">
+            <h3>SYSTEM LOG</h3>
             <SystemLog deviceId={deviceId} />
           </div>
           <div className="flex-1  p-4 border-round ">
+            <h3>ACTIVITY</h3>
             <Activity />
           </div>
         </div>

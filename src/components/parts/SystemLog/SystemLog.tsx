@@ -1,6 +1,5 @@
-import { Timeline } from "primereact/timeline";
 import { useState, useEffect, useCallback } from "react";
-import { Chart } from "primereact/chart";
+import { Timeline } from "primereact/timeline";
 import { sortByTime, timeFromNow } from "../../../utils/DateUtil";
 
 const SystemLog = ({ deviceId }: { deviceId: any }) => {
@@ -10,34 +9,6 @@ const SystemLog = ({ deviceId }: { deviceId: any }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadedEvents, setLoadedEvents] = useState<any[]>([]);
   const [data, setData] = useState<any[]>([]);
-
-  const [events, setEvents] = useState<any[]>([
-    {
-      status: "Ordered",
-      date: "15/10/2020 10:30",
-      icon: "pi pi-shopping-cart",
-      color: "#9C27B0",
-      image: "game-controller.jpg",
-    },
-    {
-      status: "Processing",
-      date: "15/10/2020 14:00",
-      icon: "pi pi-cog",
-      color: "#673AB7",
-    },
-    {
-      status: "Shipped",
-      date: "15/10/2020 16:15",
-      icon: "pi pi-shopping-cart",
-      color: "#FF9800",
-    },
-    {
-      status: "Delivered",
-      date: "16/10/2020 10:00",
-      icon: "pi pi-check",
-      color: "#607D8B",
-    },
-  ]);
 
   const dataPointValuesHandler = () => {
     const loadedEvents_1: any[] = [];
@@ -80,7 +51,7 @@ const SystemLog = ({ deviceId }: { deviceId: any }) => {
         definition: item.definition,
         icon: "pi pi-check",
         color: "#607D8B",
-        status: "Delivered",
+        status: "Device online",
       }));
       setSensorStats(dataPointValues);
     } catch (error: any) {
@@ -94,32 +65,6 @@ const SystemLog = ({ deviceId }: { deviceId: any }) => {
 
   useEffect(() => {
     dataPointValuesHandler();
-    setEvents([
-      {
-        status: "Ordered",
-        date: "15/10/2020 10:30",
-        icon: "pi pi-shopping-cart",
-        color: "#9C27B0",
-      },
-      {
-        status: "Processing",
-        date: "15/10/2020 14:00",
-        icon: "pi pi-cog",
-        color: "#673AB7",
-      },
-      {
-        status: "Shipped",
-        date: "15/10/2020 16:15",
-        icon: "pi pi-shopping-cart",
-        color: "#FF9800",
-      },
-      {
-        status: "Delivered",
-        date: "16/10/2020 10:00",
-        icon: "pi pi-check",
-        color: "#607D8B",
-      },
-    ]);
   }, [data]);
 
   return (
@@ -127,7 +72,7 @@ const SystemLog = ({ deviceId }: { deviceId: any }) => {
       value={sensorStats}
       className="customized-timeline"
       content={customizedContent}
-      style={{ maxWidth: "1px", paddingLeft: "0px", paddingRight: "0px" }}
+      style={{ marginLeft: "-35rem" }}
     />
   );
 };
