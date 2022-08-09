@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "primereact/card";
+import { Button } from "primereact/button";
 import { ProgressSpinner } from "primereact/progressspinner";
 import {
   FaVideo,
@@ -14,6 +16,7 @@ import { DEVICESURL } from "../../constants/global";
 import "./Dashboard.css";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [sensors, setSensors] = useState<any[]>([]);
   const [error, setError] = useState(false);
   const [sensorsCount, setSensorCounts] = useState(null);
@@ -48,7 +51,12 @@ const Dashboard = () => {
         SENSOR LIST
       </div>
       <div className="flex align-items-center justify-content-center  font-bold text-black  m-2">
-        <FaWindowRestore />
+        <Button
+          label="Add Sensor"
+          icon="pi pi-plus"
+          aria-label="Submit"
+          onClick={() => navigate("/add-sensor")}
+        />
       </div>
     </div>
   );

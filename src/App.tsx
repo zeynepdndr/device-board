@@ -34,7 +34,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="sensor/:device_id" element={<Sensor />} />
           <Route path="/" element={null} />
-          <Route path="add-sensor/:device_id" element={<SensorForm />} />
+          <Route path="add-sensor" element={<SensorForm />} />
         </Routes>
       </Layout>
     </Router>

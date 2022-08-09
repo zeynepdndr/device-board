@@ -34,10 +34,6 @@ const MainNavigation = () => {
       label: "Settings",
       icon: "pi pi-fw pi-calendar",
     },
-    {
-      label: "Logout",
-      icon: "pi pi-fw pi-power-off",
-    },
   ];
 
   const start = (
