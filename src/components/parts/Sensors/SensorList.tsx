@@ -36,11 +36,12 @@ const SensorList = ({ items }: { items: any }) => {
           />
         </Link>
 
-        <Link
-          to={"/add-sensor/:device_id"}
-          className="p-button-outlined p-button-success"
-        >
-          <Button label="EDIT" className="p-button-outlined p-button-success" />
+        <Link to={"/add-sensor/:device_id"}>
+          <Button
+            icon="pi pi-pencil"
+            className="p-button-rounded p-button-success"
+            aria-label="Search"
+          />
         </Link>
       </>
     );
