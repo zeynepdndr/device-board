@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
-import { ProgressSpinner } from "primereact/progressspinner";
 import { FaVideo, FaUsers, FaExclamationCircle } from "react-icons/fa";
 import SensorList from "../../components/parts/Sensors/SensorList";
 import SensorTemperatures from "../../components/parts/Charts/SensorTemperatures/SensorTemperatures";
 import { DEVICESURL } from "../../constants/global";
+import Spinner from "../../components/partials/Spinner";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -70,15 +70,7 @@ const Dashboard = () => {
 
   let listContent = <div>No data found!</div>;
   const loadingStatus = (onContent: boolean) => (
-    <ProgressSpinner
-      style={{
-        width: `${onContent ? "50px" : "30px"}`,
-        height: `${onContent ? "50px" : "30px"}`,
-      }}
-      strokeWidth="7"
-      fill={onContent ? `var(--surface-ground)` : undefined}
-      animationDuration=".8s"
-    />
+    <Spinner onContent={onContent} />
   );
 
   if (sensors?.length > 0) {

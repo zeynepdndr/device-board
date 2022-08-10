@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Chart } from "primereact/chart";
-import { ProgressSpinner } from "primereact/progressspinner";
 import { unixTimeToDate, sortByTime } from "../../../../utils/DateUtil";
+import Spinner from "../../../partials/Spinner";
 
 const SensorTemperatures = () => {
   const [error, setError] = useState(null);
@@ -134,16 +134,8 @@ const SensorTemperatures = () => {
 
   let chartContent = <div>No data found!</div>;
 
-  const loadingStatus = () => (
-    <ProgressSpinner
-      style={{
-        width: "50px",
-        height: "50px",
-      }}
-      strokeWidth="7"
-      fill={`var(--surface-ground)`}
-      animationDuration=".8s"
-    />
+  const loadingStatus = (onContent: boolean) => (
+    <Spinner onContent={onContent} />
   );
 
   if (lineData && lineData.datasets.length > 0) {
@@ -155,7 +147,7 @@ const SensorTemperatures = () => {
   }
 
   if (isLoading) {
-    chartContent = loadingStatus();
+    chartContent = loadingStatus(true);
   }
 
   return <div className="card">{chartContent}</div>;

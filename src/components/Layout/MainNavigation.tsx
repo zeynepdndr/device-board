@@ -4,8 +4,8 @@ import { Menubar } from "primereact/menubar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import logo from "../../assests/img/logo.jpg";
-import styles from "./MainNavigation.module.css";
 
+// Unused component after adding Menu component
 const MainNavigation = () => {
   const items = [
     {

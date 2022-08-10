@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assests/img/nbt-logo.jpg";
 
@@ -17,7 +16,6 @@ const Menu = () => {
           />
         </Link>
       </div>
-
       <div>
         <nav>
           <ul>
@@ -28,12 +26,15 @@ const Menu = () => {
               <Link to={"/dashboard"}>Dashboard</Link>
             </li>
             <li>
+              {/* Hard-coded link to provide exact design */}
               <Link to={"/dashboard"}>Reports</Link>
             </li>
             <li>
+              {/* Hard-coded link to provide exact design */}
               <Link to={"/dashboard"}>Sensor</Link>
             </li>
             <li>
+              {/* Hard-coded link to provide exact design */}
               <Link to={"/dashboard"}>Logout</Link>
             </li>
           </ul>
