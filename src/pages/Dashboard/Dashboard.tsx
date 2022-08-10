@@ -3,27 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { ProgressSpinner } from "primereact/progressspinner";
-import {
-  FaVideo,
-  FaUsers,
-  FaExclamationCircle,
-  FaWindowRestore,
-} from "react-icons/fa";
+import { FaVideo, FaUsers, FaExclamationCircle } from "react-icons/fa";
 import SensorList from "../../components/parts/Sensors/SensorList";
 import SensorTemperatures from "../../components/parts/Charts/SensorTemperatures/SensorTemperatures";
 import { DEVICESURL } from "../../constants/global";
 
-import "./Dashboard.css";
-
 const Dashboard = () => {
   const navigate = useNavigate();
   const [sensors, setSensors] = useState<any[]>([]);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
   const [sensorsCount, setSensorCounts] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getSensors = () => {
+  const getSensors = async () => {
     setIsLoading(true);
+    setError(null);
     fetch(DEVICESURL)
       .then((res) => res.json())
       .then((json) => {
@@ -33,7 +27,7 @@ const Dashboard = () => {
       })
       .catch((err) => {
         setIsLoading(false);
-        setError(true);
+        setError(err.message);
       });
   };
 
@@ -61,7 +55,6 @@ const Dashboard = () => {
     </div>
   );
 
-  let chartContent = <div>No data found!</div>;
   let listContent = <div>No data found!</div>;
   const loadingStatus = (onContent: boolean) => (
     <ProgressSpinner
@@ -76,17 +69,22 @@ const Dashboard = () => {
   );
 
   if (sensors?.length > 0) {
-    chartContent = <SensorTemperatures />;
     listContent = <SensorList items={sensors} />;
   }
 
   if (error) {
-    chartContent = <p>Something went wrong!</p>;
-    listContent = <p>Something went wrong!</p>;
+    listContent = (
+      <>
+        <i
+          className="pi pi-exclamation-triangle"
+          style={{ fontSize: "1.5em" }}
+        />
+        <p>{error} </p>
+      </>
+    );
   }
 
   if (isLoading) {
-    chartContent = loadingStatus(true);
     listContent = loadingStatus(true);
   }
 
@@ -97,7 +95,14 @@ const Dashboard = () => {
           <div className="flex-1 bg-indigo-500 text-white font-bold text-center p-4 border-round">
             <FaVideo />
             <h4>TOTAL SENSOR</h4>
-            {sensorsCount ? sensorsCount : loadingStatus(false)}
+            {!error && !isLoading && sensorsCount}
+            {isLoading && loadingStatus(false)}
+            {error && (
+              <i
+                className="pi pi-exclamation-triangle"
+                style={{ fontSize: "1.5em" }}
+              />
+            )}
           </div>
           <div className="flex-1  bg-indigo-500 text-white font-bold text-center p-4 border-round mx-4">
             <FaExclamationCircle />
@@ -114,7 +119,7 @@ const Dashboard = () => {
         </div>
       </div>
       <Card header={headerChart} className="p-4 mb-4 text-center">
-        {chartContent}
+        <SensorTemperatures />
       </Card>
       <Card header={headerList} className="p-4 mb-4 text-center">
         {listContent}

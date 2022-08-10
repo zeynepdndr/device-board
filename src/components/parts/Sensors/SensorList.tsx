@@ -11,7 +11,6 @@ const SensorList = ({ items }: { items: any }) => {
 
   const setTableData = () => {
     setLoading(true);
-
     setTotalRecords(items?.length);
     setSensors(items);
     setLoading(false);
@@ -29,14 +28,20 @@ const SensorList = ({ items }: { items: any }) => {
           className="p-button-outlined p-button-secondary"
         />
 
-        <Link to={`/sensor/${rowData.device_id}`}>
+        <Link
+          to={`/sensor/${rowData.device_id}`}
+          style={{ textDecoration: "none" }}
+        >
           <Button
             label="Details"
             className="p-button-outlined p-button-info mx-5"
           />
         </Link>
 
-        <Link to={"/add-sensor/:device_id"}>
+        <Link
+          to={`/edit-sensor/${rowData.device_id}/${rowData.location}/${rowData.customer}`}
+          style={{ textDecoration: "none" }}
+        >
           <Button
             icon="pi pi-pencil"
             className="p-button-rounded p-button-success"

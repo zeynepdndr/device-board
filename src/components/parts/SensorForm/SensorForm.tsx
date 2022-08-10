@@ -1,11 +1,14 @@
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState, useEffect, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { classNames } from "primereact/utils";
+import { useParams } from "react-router-dom";
 
 const SensorForm = (props: any) => {
+  const param = useParams();
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [enteredSensorIdError, setEnteredNameError] = useState(false);
@@ -14,8 +17,13 @@ const SensorForm = (props: any) => {
   const [isFormValid, setIsFormValid] = useState(
     !enteredCustomerError && !enteredSensorIdError && !enteredLocationError
   );
+  const [formMode, setFormMode] = useState<string>("add");
 
-  const [userInput, setUserInput] = useState({
+  const [userInput, setUserInput] = useState<{
+    enteredSensorId: string;
+    enteredLocation: string;
+    enteredCustomer: string;
+  }>({
     enteredSensorId: "",
     enteredLocation: "",
     enteredCustomer: "",
@@ -93,7 +101,6 @@ const SensorForm = (props: any) => {
     setIsLoading(false);
   };
   const submitHandler = (event: FormEvent) => {
-    console.log("fsdfs:", event);
     event.preventDefault();
     errorHandler();
 
@@ -106,7 +113,6 @@ const SensorForm = (props: any) => {
     };
 
     onSaveSensorData(SensorData);
-
     setUserInput({
       enteredSensorId: "",
       enteredLocation: "",
@@ -115,128 +121,149 @@ const SensorForm = (props: any) => {
     setIsFormValid(false);
   };
 
+  useEffect(() => {
+    if (Object.keys(param).length !== 0) {
+      console.log("again param:", param);
+      setFormMode("edit");
+      setUserInput({
+        enteredSensorId: param.device_id || "",
+        enteredCustomer: param.customer || "",
+        enteredLocation: param.location || "",
+      });
+    }
+  }, []);
   return (
-    <div className="card">
-      <h3 className="text-center">New Sensor</h3>
-      <form onSubmit={submitHandler} className="text-center">
-        <div className="flex flex-wrap card-container p-fluid">
-          <div className="flex-column">
-            <div className="field mb-5">
-              <span className="p-float-label">
-                <InputText
-                  id="sensorId"
-                  value={userInput.enteredSensorId}
-                  onChange={sensorIdChangeHandler}
-                  autoFocus
-                  className={classNames({
-                    "p-invalid": enteredSensorIdError,
-                  })}
-                />
-                <label
-                  htmlFor="sensorId"
-                  className={classNames({ "p-error": enteredSensorIdError })}
-                >
-                  Sensor ID*
-                </label>
-              </span>
-            </div>
-            <div className="field mb-5">
-              <span className="p-float-label">
-                <InputText
-                  id="location"
-                  name="location"
-                  value={userInput.enteredLocation}
-                  onChange={locationChangeHandler}
-                  autoFocus
-                  className={classNames({
-                    "p-invalid": enteredLocationError,
-                  })}
-                />
-                <label
-                  htmlFor="location"
-                  className={classNames({ "p-error": enteredLocationError })}
-                >
-                  Location*
-                </label>
-              </span>
-            </div>
-            <div className="field mb-5">
-              <span className="p-float-label p-input-icon-right">
-                <i className="pi pi-envelope" />
-                <InputText
-                  id="customer"
-                  name="customer"
-                  value={userInput.enteredCustomer}
-                  onChange={customerChangeHandler}
-                  autoFocus
-                  className={classNames({
-                    "p-invalid": enteredCustomerError,
-                  })}
-                />
-                <label
-                  htmlFor="customer"
-                  className={classNames({ "p-error": enteredCustomerError })}
-                >
-                  Customer*
-                </label>
-              </span>
-            </div>
-          </div>
-          <div>
-            <div className="flex-column mb-5">
-              <div className="field">
-                <span className="p-float-label">
-                  <InputText
-                    id="minTemp"
-                    name="minTemp"
-                    value={userInput.enteredLocation}
-                    onChange={locationChangeHandler}
-                    autoFocus
-                  />
-                  <label htmlFor="minTemp">Min Temp. Threshold</label>
-                </span>
-              </div>
-              <div className="field-checkbox">
-                <Checkbox
-                  inputId="accept"
-                  name="accept"
-                  checked={null}
-                  onChange={() => {}}
-                />
-                <label htmlFor="accept">Monitor Min Temperature</label>
-              </div>
-            </div>
+    <>
+      <div className="card">
+        <h3 className="text-center">
+          {formMode === `edit`
+            ? `Edit Sensor ` + userInput.enteredSensorId
+            : `Add Sensor`}
+        </h3>
+        <form onSubmit={submitHandler} className="text-center">
+          <div className="flex flex-wrap card-container p-fluid">
             <div className="flex-column">
-              <div className="field">
+              <div className="field mb-5">
                 <span className="p-float-label">
                   <InputText
-                    id="maxTemp"
-                    name="maxTemp"
+                    id="sensorId"
+                    value={userInput.enteredSensorId}
+                    onChange={sensorIdChangeHandler}
+                    autoFocus
+                    className={classNames({
+                      "p-invalid": enteredSensorIdError,
+                    })}
+                  />
+                  <label
+                    htmlFor="sensorId"
+                    className={classNames({ "p-error": enteredSensorIdError })}
+                  >
+                    Sensor ID*
+                  </label>
+                </span>
+              </div>
+              <div className="field mb-5">
+                <span className="p-float-label">
+                  <InputText
+                    id="location"
+                    name="location"
                     value={userInput.enteredLocation}
                     onChange={locationChangeHandler}
                     autoFocus
+                    className={classNames({
+                      "p-invalid": enteredLocationError,
+                    })}
                   />
-                  <label htmlFor="maxTemp">Max Temp. Threshold</label>
+                  <label
+                    htmlFor="location"
+                    className={classNames({ "p-error": enteredLocationError })}
+                  >
+                    Location*
+                  </label>
                 </span>
               </div>
-              <div className="field-checkbox">
-                <Checkbox
-                  inputId="accept"
-                  name="accept"
-                  checked={null}
-                  onChange={() => {}}
-                />
-                <label htmlFor="accept">Monitor Max Temperature</label>
+              <div className="field mb-5">
+                <span className="p-float-label p-input-icon-right">
+                  <i className="pi pi-envelope" />
+                  <InputText
+                    id="customer"
+                    name="customer"
+                    value={userInput.enteredCustomer}
+                    onChange={customerChangeHandler}
+                    autoFocus
+                    className={classNames({
+                      "p-invalid": enteredCustomerError,
+                    })}
+                  />
+                  <label
+                    htmlFor="customer"
+                    className={classNames({ "p-error": enteredCustomerError })}
+                  >
+                    Customer*
+                  </label>
+                </span>
+              </div>
+            </div>
+            <div>
+              <div className="flex-column mb-5">
+                <div className="field">
+                  <span className="p-float-label">
+                    <InputText
+                      id="minTemp"
+                      name="minTemp"
+                      value={userInput.enteredLocation}
+                      onChange={locationChangeHandler}
+                      autoFocus
+                    />
+                    <label htmlFor="minTemp">Min Temp. Threshold</label>
+                  </span>
+                </div>
+                <div className="field-checkbox">
+                  <Checkbox
+                    inputId="accept"
+                    name="accept"
+                    checked={null}
+                    onChange={() => {}}
+                  />
+                  <label htmlFor="accept">Monitor Min Temperature</label>
+                </div>
+              </div>
+              <div className="flex-column">
+                <div className="field">
+                  <span className="p-float-label">
+                    <InputText
+                      id="maxTemp"
+                      name="maxTemp"
+                      value={userInput.enteredLocation}
+                      onChange={locationChangeHandler}
+                      autoFocus
+                    />
+                    <label htmlFor="maxTemp">Max Temp. Threshold</label>
+                  </span>
+                </div>
+                <div className="field-checkbox">
+                  <Checkbox
+                    inputId="accept"
+                    name="accept"
+                    checked={null}
+                    onChange={() => {}}
+                  />
+                  <label htmlFor="accept">Monitor Max Temperature</label>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="new-book__actions">
-          <Button type="submit" label="Add Sensor" className="mr-5" />
-          <Button onClick={props.onCancel}>Cancel</Button>
-        </div>
-      </form>
-    </div>
+          <div className="new-book__actions">
+            <Button
+              type="submit"
+              label={formMode === `edit` ? `Update Sensor` : `Add Sensor`}
+              className="mr-5"
+            />
+            <Button onClick={props.onCancel}>Cancel</Button>
+          </div>
+        </form>
+      </div>
+    </>
   );
 };
 

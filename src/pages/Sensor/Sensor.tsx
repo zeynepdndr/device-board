@@ -109,7 +109,7 @@ const Sensor = () => {
           </div>
           <div className="flex-1  p-4 border-round ">
             <h3>ACTIVITY</h3>
-            <Activity />
+            <Activity deviceId={deviceId} />
           </div>
         </div>
       </div>

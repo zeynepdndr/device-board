@@ -31,10 +31,14 @@ function App() {
       <Layout>
         <Routes>
           {/* {getRoutes(routes)} */}
+          <Route path="/" element={null} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="sensor/:device_id" element={<Sensor />} />
-          <Route path="/" element={null} />
           <Route path="add-sensor" element={<SensorForm />} />
+          <Route
+            path="edit-sensor/:device_id/:location/:customer"
+            element={<SensorForm />}
+          />
         </Routes>
       </Layout>
     </Router>

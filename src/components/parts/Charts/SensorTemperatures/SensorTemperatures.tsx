@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Chart } from "primereact/chart";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { unixTimeToDate, sortByTime } from "../../../../utils/DateUtil";
 
 const SensorTemperatures = () => {
@@ -15,7 +16,7 @@ const SensorTemperatures = () => {
   const [lineData, setLineData] = useState<any>();
 
   // @TODO : Make this function dynamic
-  const dataPointValuesHandler = () => {
+  const dataPointValuesHandler = async () => {
     const loadedStatsTimePoints_1 = [];
     const loadedStatsTempPoints_1 = [];
 
@@ -43,37 +44,7 @@ const SensorTemperatures = () => {
     setLoadedStatsTime_2(loadedStatsTempPoints_2);
 
     ///////////////////////////////////////////7
-  };
 
-  const getSensorsStats = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch("http://localhost:3009/sensor/stats");
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-
-      const data = await response.json();
-      setData(data.results);
-      dataPointValuesHandler();
-      console.log("in get method");
-    } catch (error: any) {
-      setError(error.message);
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log("in useEffect no dependant");
-
-    getSensorsStats();
-  }, []);
-
-  useEffect(() => {
-    console.log("in useEffect with data");
-
-    dataPointValuesHandler();
     setLineData({
       labels: loadedStatsTime_1,
       datasets: [
@@ -93,6 +64,39 @@ const SensorTemperatures = () => {
         },
       ],
     });
+  };
+
+  const getSensorsStats = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("http://localhost:3009/sensor/stats");
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      const data = await response.json();
+      setData(data.results);
+
+      console.log("in get method");
+    } catch (error: any) {
+      setError(error.message);
+    }
+    dataPointValuesHandler();
+
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    console.log("in useEffect no dependant");
+    getSensorsStats();
+  }, []);
+
+  useEffect(() => {
+    console.log("in useEffect with data");
+    dataPointValuesHandler();
+    console.log("data:", data);
   }, [data]);
 
   const getLightTheme = () => {
@@ -133,11 +137,34 @@ const SensorTemperatures = () => {
 
   const { basicOptions } = getLightTheme();
 
-  return (
-    <div className="card">
-      <Chart type="line" data={lineData} options={basicOptions} />
-    </div>
+  let chartContent = <div>No data found!</div>;
+
+  const loadingStatus = () => (
+    <ProgressSpinner
+      style={{
+        width: "50px",
+        height: "50px",
+      }}
+      strokeWidth="7"
+      fill={`var(--surface-ground)`}
+      animationDuration=".8s"
+    />
   );
+
+  if (lineData && lineData.datasets.length > 0) {
+    console.log("lineData", lineData);
+    chartContent = <Chart type="line" data={lineData} options={basicOptions} />;
+  }
+
+  if (error) {
+    chartContent = <p>Something went wrong!</p>;
+  }
+
+  if (isLoading) {
+    chartContent = loadingStatus();
+  }
+
+  return <div className="card">{chartContent}</div>;
 };
 
 export default SensorTemperatures;
