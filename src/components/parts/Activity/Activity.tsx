@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { Timeline } from "primereact/timeline";
 import { OrderList } from "primereact/orderlist";
-import { sortByTime, timeFromNow } from "../../../utils/DateUtil";
+import { ScrollPanel } from "primereact/scrollpanel";
+import {
+  sortByTime,
+  timeFromNow,
+  unixTimeToDate,
+} from "../../../utils/DateUtil";
 import imgg from "../../../assests/img/logo.jpg";
 import { Card } from "primereact/card";
+// import { EVENT_DEVICE } from "../../../constants/shared-constants";
 
 const Activity = ({ deviceId }: { deviceId: any }) => {
   const [sensorStats, setSensorStats] = useState([]);
@@ -32,10 +38,11 @@ const Activity = ({ deviceId }: { deviceId: any }) => {
       //   <span>{item.status}</span>
       //   <span>{timeFromNow(item.date)}</span>
       // </div>
-      <Card title={item.status} subTitle={item.date}>
-        {item.image && (
-          <img src={imgg} alt={item.name} width={200} className="shadow-1" />
-        )}
+      <Card
+        title={item.status}
+        subTitle={unixTimeToDate(item.date)}
+        className="m-2"
+      >
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore
           sed consequuntur error repudiandae numquam deserunt quisquam repellat
@@ -49,10 +56,7 @@ const Activity = ({ deviceId }: { deviceId: any }) => {
 
   const customizedMarker = (item: any) => {
     return (
-      <span
-        className="custom-marker shadow-1"
-        // style={{ backgroundColor: item.color }}
-      >
+      <span className="custom-marker red" style={{ color: "red" }}>
         <i className="pi pi-check" />
       </span>
     );
@@ -93,13 +97,18 @@ const Activity = ({ deviceId }: { deviceId: any }) => {
   }, [data]);
   return (
     <div className="card">
-      <Timeline
-        value={sensorStats}
-        className="customized-timeline"
-        marker={customizedMarker}
-        content={customizedContent}
-        style={{ marginLeft: "-35rem" }}
-      />
+      <ScrollPanel
+        style={{ width: "110%", height: "485px" }}
+        className="custom"
+      >
+        <Timeline
+          value={sensorStats}
+          className="customized-timeline"
+          marker={customizedMarker}
+          content={customizedContent}
+          style={{ marginLeft: "-35rem" }}
+        />
+      </ScrollPanel>
     </div>
   );
 };

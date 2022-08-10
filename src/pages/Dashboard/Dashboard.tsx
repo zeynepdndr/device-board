@@ -75,10 +75,12 @@ const Dashboard = () => {
   if (error) {
     listContent = (
       <>
-        <i
-          className="pi pi-exclamation-triangle"
-          style={{ fontSize: "1.5em" }}
-        />
+        <span className="custom-marker red" style={{ color: "red" }}>
+          <i
+            className="pi pi-exclamation-triangle"
+            style={{ fontSize: "1.5em" }}
+          />
+        </span>
         <p>{error} </p>
       </>
     );
@@ -98,10 +100,12 @@ const Dashboard = () => {
             {!error && !isLoading && sensorsCount}
             {isLoading && loadingStatus(false)}
             {error && (
-              <i
-                className="pi pi-exclamation-triangle"
-                style={{ fontSize: "1.5em" }}
-              />
+              <span className="custom-marker red" style={{ color: "red" }}>
+                <i
+                  className="pi pi-exclamation-triangle"
+                  style={{ fontSize: "1.5em" }}
+                />
+              </span>
             )}
           </div>
           <div className="flex-1  bg-indigo-500 text-white font-bold text-center p-4 border-round mx-4">

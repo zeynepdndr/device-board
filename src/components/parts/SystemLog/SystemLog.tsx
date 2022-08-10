@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Timeline } from "primereact/timeline";
+import { ScrollPanel } from "primereact/scrollpanel";
 import { sortByTime, timeFromNow } from "../../../utils/DateUtil";
 
 const SystemLog = ({ deviceId }: { deviceId: any }) => {
@@ -68,12 +69,19 @@ const SystemLog = ({ deviceId }: { deviceId: any }) => {
   }, [data]);
 
   return (
-    <Timeline
-      value={sensorStats}
-      className="customized-timeline"
-      content={customizedContent}
-      style={{ marginLeft: "-35rem" }}
-    />
+    <div className="card">
+      <ScrollPanel
+        style={{ width: "110%", height: "485px" }}
+        className="custom"
+      >
+        <Timeline
+          value={sensorStats}
+          className="customized-timeline"
+          content={customizedContent}
+          style={{ marginLeft: "-35rem" }}
+        />
+      </ScrollPanel>
+    </div>
   );
 };
 export default SystemLog;
