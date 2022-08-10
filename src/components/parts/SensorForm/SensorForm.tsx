@@ -123,7 +123,6 @@ const SensorForm = (props: any) => {
 
   useEffect(() => {
     if (Object.keys(param).length !== 0) {
-      console.log("again param:", param);
       setFormMode("edit");
       setUserInput({
         enteredSensorId: param.device_id || "",

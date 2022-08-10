@@ -20,7 +20,6 @@ const SystemLog = ({ deviceId }: { deviceId: any }) => {
       loadedEvents_1.push(timeFromNow(sortedByTime_1[key].time));
       //   loadedStatsTempPoints_1.push(sortedByTime_1[key].temp);
     }
-    console.log(loadedEvents_1);
     setLoadedEvents(loadedEvents_1);
   };
 
@@ -69,19 +68,14 @@ const SystemLog = ({ deviceId }: { deviceId: any }) => {
   }, [data]);
 
   return (
-    <div className="card">
-      <ScrollPanel
-        style={{ width: "110%", height: "485px" }}
-        className="custom"
-      >
-        <Timeline
-          value={sensorStats}
-          className="customized-timeline"
-          content={customizedContent}
-          style={{ marginLeft: "-35rem" }}
-        />
-      </ScrollPanel>
-    </div>
+    <ScrollPanel style={{ width: "100%", height: "485px" }} className="custom">
+      <Timeline
+        value={sensorStats}
+        className="customized-timeline"
+        content={customizedContent}
+        style={{ marginLeft: "-35rem" }}
+      />
+    </ScrollPanel>
   );
 };
 export default SystemLog;

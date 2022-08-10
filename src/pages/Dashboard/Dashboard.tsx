@@ -36,15 +36,23 @@ const Dashboard = () => {
   }, []);
 
   const headerChart = (
-    <p className="text-left font-bold text-black m-2">SENSOR TEMPERATURES</p>
+    <p
+      className="text-left font-bold m-2"
+      style={{ color: "#292325", fontSize: "1.25rem" }}
+    >
+      SENSOR TEMPERATURES
+    </p>
   );
 
   const headerList = (
     <div className="flex justify-content-between flex-wrap card-container">
-      <div className="flex align-items-center justify-content-center font-bold text-black m-2align-items-center justify-content-center font-bold text-black m-2">
+      <div
+        className="flex align-items-center justify-content-center font-bold"
+        style={{ color: "#292325", fontSize: "1.25rem" }}
+      >
         SENSOR LIST
       </div>
-      <div className="flex align-items-center justify-content-center  font-bold text-black  m-2">
+      <div className="flex align-items-center justify-content-center  font-bold   m-2">
         <Button
           label="Add Sensor"
           icon="pi pi-plus"
@@ -139,7 +147,7 @@ const Dashboard = () => {
       <Card header={headerChart} className="p-4 mb-4 text-center">
         <SensorTemperatures />
       </Card>
-      <Card header={headerList} className="p-4 mb-4 text-center">
+      <Card header={headerList} className="p-4 text-center">
         {listContent}
       </Card>
     </>

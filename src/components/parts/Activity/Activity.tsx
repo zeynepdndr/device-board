@@ -28,7 +28,6 @@ const Activity = ({ deviceId }: { deviceId: any }) => {
       loadedEvents_1.push(timeFromNow(sortedByTime_1[key].time));
       //   loadedStatsTempPoints_1.push(sortedByTime_1[key].temp);
     }
-    console.log(loadedEvents_1);
     setLoadedEvents(loadedEvents_1);
   };
 
@@ -98,7 +97,7 @@ const Activity = ({ deviceId }: { deviceId: any }) => {
   return (
     <div className="card">
       <ScrollPanel
-        style={{ width: "110%", height: "485px" }}
+        style={{ width: "100%", height: "485px" }}
         className="custom"
       >
         <Timeline

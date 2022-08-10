@@ -28,7 +28,6 @@ const Sensor = () => {
       .catch((err) => {
         setIsLoading(false);
         setError(true);
-        console.log("err:", err);
       });
   };
 
@@ -73,9 +72,9 @@ const Sensor = () => {
 
   return (
     <div>
-      <div className="card">
+      <div className="card  mb-4 ">
         <Splitter>
-          <SplitterPanel className="p-2">
+          <SplitterPanel style={{ maxWidth: "30%" }}>
             <div className="card">
               <div className="flex justify-content-around flex-wrap align-items-center text-black m-2 ">
                 <h4>TOTAL MESSAGES</h4>
@@ -98,18 +97,32 @@ const Sensor = () => {
           </SplitterPanel>
         </Splitter>
       </div>
-      <div className="card">
-        <TemperatureDaily />
+      <div className="card  mb-4 ">
+        <TemperatureDaily deviceId={deviceId} />
       </div>
-      <div className="card">
-        <div className="flex card-container indigo-container">
-          <div className="flex-1  p-4 border-round text-black">
-            <h3>SYSTEM LOG</h3>
-            <SystemLog deviceId={deviceId} />
+      <div>
+        <div className="flex">
+          <div className="flex-1">
+            <div className="p-card">
+              <p
+                className="text-left font-bold pl-5 pt-5  pb-5"
+                style={{ color: "#292325", fontSize: "1.25rem" }}
+              >
+                SYSTEM LOG
+              </p>
+              <SystemLog deviceId={deviceId} />
+            </div>
           </div>
-          <div className="flex-1  p-4 border-round ">
-            <h3>ACTIVITY</h3>
-            <Activity deviceId={deviceId} />
+          <div className="flex-1">
+            <div className="p-card">
+              <p
+                className="text-left font-bold pl-5 pt-5  pb-5"
+                style={{ color: "#292325", fontSize: "1.25rem" }}
+              >
+                ACTIVITY
+              </p>
+              <Activity deviceId={deviceId} />
+            </div>
           </div>
         </div>
       </div>

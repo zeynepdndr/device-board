@@ -31,7 +31,7 @@ const WeeklyAverageTemp = (props: any) => {
     setError(null);
     try {
       const response = await fetch(
-        `http://localhost:3009/sensor/${props.deviceId}/stats/weekly`
+        `http://localhost:3009/sensor/${props.deviceId}/stats/weekly_avg`
       );
 
       if (!response.ok) {
@@ -153,13 +153,21 @@ const WeeklyAverageTemp = (props: any) => {
   const { basicOptions } = getLightTheme();
 
   return (
-    <div className="card p-5">
-      <h5 className="m-0">WEEKLY AVERAGE TEMP</h5>
+    <div className="card">
+      {/* <div className="m-0" style={{ color: "#292325", fontSize: "1.25rem" }}>
+        WEEKLY AVERAGE TEMP
+      </div> */}
+      <p
+        className="text-left font-bold"
+        style={{ color: "#292325", fontSize: "1.25rem", marginLeft: "1rem" }}
+      >
+        WEEKLY AVERAGE TEMP
+      </p>
       <Chart
         type="line"
         data={lineData}
         options={basicOptions}
-        style={{ width: 735, height: 222 }}
+        style={{ height: 222, padding: "1rem" }}
       />
     </div>
   );

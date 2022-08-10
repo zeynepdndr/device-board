@@ -78,8 +78,6 @@ const SensorTemperatures = () => {
 
       const data = await response.json();
       setData(data.results);
-
-      console.log("in get method");
     } catch (error: any) {
       setError(error.message);
     }
@@ -89,14 +87,11 @@ const SensorTemperatures = () => {
   };
 
   useEffect(() => {
-    console.log("in useEffect no dependant");
     getSensorsStats();
   }, []);
 
   useEffect(() => {
-    console.log("in useEffect with data");
     dataPointValuesHandler();
-    console.log("data:", data);
   }, [data]);
 
   const getLightTheme = () => {
@@ -152,7 +147,6 @@ const SensorTemperatures = () => {
   );
 
   if (lineData && lineData.datasets.length > 0) {
-    console.log("lineData", lineData);
     chartContent = <Chart type="line" data={lineData} options={basicOptions} />;
   }
 
