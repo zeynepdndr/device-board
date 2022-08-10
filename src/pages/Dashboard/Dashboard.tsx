@@ -7,6 +7,7 @@ import SensorList from "../../components/parts/Sensors/SensorList";
 import SensorTemperatures from "../../components/parts/Charts/SensorTemperatures/SensorTemperatures";
 import { DEVICESURL } from "../../constants/global";
 import Spinner from "../../components/partials/Spinner";
+import ErrorStatus from "../../components/partials/ErrorStatus";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -78,17 +79,7 @@ const Dashboard = () => {
   }
 
   if (error) {
-    listContent = (
-      <>
-        <span className="custom-marker red" style={{ color: "red" }}>
-          <i
-            className="pi pi-exclamation-triangle"
-            style={{ fontSize: "1.5em" }}
-          />
-        </span>
-        <p>{error} </p>
-      </>
-    );
+    listContent = <ErrorStatus onContent={true} message={"error"} />;
   }
 
   if (isLoading) {
@@ -107,14 +98,7 @@ const Dashboard = () => {
             <h4>TOTAL SENSOR</h4>
             {!error && !isLoading && sensorsCount}
             {isLoading && loadingStatus(false)}
-            {error && (
-              <span className="custom-marker red" style={{ color: "red" }}>
-                <i
-                  className="pi pi-exclamation-triangle"
-                  style={{ fontSize: "1.5em" }}
-                />
-              </span>
-            )}
+            {error && <ErrorStatus onContent={false} message={error} />}
           </div>
           <div
             className="flex-1 font-bold text-center p-4 border-round mx-4"
@@ -123,7 +107,7 @@ const Dashboard = () => {
             <FaExclamationCircle />
             <h4>OPEN ALERTS</h4>
             {/* Hard-coded data for open alerts on dashboard, since it is not provided by the api */}
-            2
+            {/* For that reason, loading and error case are not added*/}2
           </div>
           <div
             className="flex-1 font-bold text-center p-4 border-round mx-4"
@@ -132,6 +116,7 @@ const Dashboard = () => {
             <FaUsers />
             <h4>TOTAL CUSTOMERS</h4>
             {/* Hard-coded data for total customer on dashboard, since it is not provided by the api */}
+            {/* For that reason, loading and error case are not added*/}
             14
           </div>
         </div>

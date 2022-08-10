@@ -16,7 +16,7 @@ const WeeklyAverageTemp = (props: any) => {
     const loadedStatsTimePoints_1 = [];
     const loadedStatsTempPoints_1 = [];
 
-    const sortedByTime_1 = sensorStats?.sort(sortByTime);
+    const sortedByTime_1 = sensorStats[0]?.stats.sort(sortByTime);
 
     for (const key in sortedByTime_1) {
       loadedStatsTimePoints_1.push(unixTimeToDate(sortedByTime_1[key].time));
@@ -24,6 +24,8 @@ const WeeklyAverageTemp = (props: any) => {
     }
     setLoadedStatsTemp_1(loadedStatsTempPoints_1);
     setLoadedStatsTime_1(loadedStatsTempPoints_1);
+
+    console.log("loaded data:", sensorStats);
   };
 
   const getSensorsStats = useCallback(async () => {
@@ -56,12 +58,20 @@ const WeeklyAverageTemp = (props: any) => {
       labels: loadedStatsTime_1,
       datasets: [
         {
-          label: props.deviceId,
+          label: sensorStats[0]?.sensor_id,
           data: loadedStatsTemp_1,
           fill: true,
           borderColor: "#FFA726",
           tension: 0.4,
           backgroundColor: "rgba(255,167,38,0.2)",
+        },
+        {
+          label: sensorStats[1]?.sensor_id,
+          data: loadedStatsTemp_1,
+          fill: false,
+          borderDash: [5, 5],
+          tension: 0.1,
+          borderColor: "#7615f5",
         },
       ],
     });
@@ -98,55 +108,8 @@ const WeeklyAverageTemp = (props: any) => {
       },
     };
 
-    let multiAxisOptions = {
-      stacked: false,
-      maintainAspectRatio: false,
-      aspectRatio: 0.6,
-      plugins: {
-        legend: {
-          labels: {
-            color: "#495057",
-          },
-        },
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: "#495057",
-          },
-          grid: {
-            color: "#ebedef",
-          },
-        },
-        y: {
-          type: "linear",
-          display: true,
-          position: "left",
-          ticks: {
-            color: "#495057",
-          },
-          grid: {
-            color: "#ebedef",
-          },
-        },
-        y1: {
-          type: "linear",
-          display: true,
-          position: "right",
-          ticks: {
-            color: "#495057",
-          },
-          grid: {
-            drawOnChartArea: false,
-            color: "#ebedef",
-          },
-        },
-      },
-    };
-
     return {
       basicOptions,
-      multiAxisOptions,
     };
   };
 

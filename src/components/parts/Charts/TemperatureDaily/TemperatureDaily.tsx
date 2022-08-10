@@ -3,16 +3,10 @@ import { Chart } from "primereact/chart";
 import { unixTimeToDate, sortByTime } from "../../../../utils/DateUtil";
 
 const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
-  const [sensorStats, setSensorStats] = useState([]);
   const [error, setError] = useState(null);
-  const [sensorStatsCount, setSensorCounts] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loadedStatsTime_1, setLoadedStatsTime_1] = useState<any[]>([]);
   const [loadedStatsTemp_1, setLoadedStatsTemp_1] = useState<any[]>([]);
-  const [loadedStatsTime_2, setLoadedStatsTime_2] = useState<any[]>([]);
-  const [loadedStatsTemp_2, setLoadedStatsTemp_2] = useState<any[]>([]);
-  const [loadedStatsTime_3, setLoadedStatsTime_3] = useState<any[]>([]);
-  const [loadedStatsTemp_3, setLoadedStatsTemp_3] = useState<any[]>([]);
   const [data, setData] = useState<any[]>([]);
 
   // @TODO : Make this function dynamic
@@ -56,7 +50,6 @@ const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
       }
 
       const data = await response.json();
-      console.log("heyÇ", data);
       setData(data.results);
     } catch (error: any) {
       setError(error.message);
@@ -67,7 +60,6 @@ const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
     getSensorsStats();
   }, []);
 
-  useEffect(() => {}, [sensorStats]);
   useEffect(() => {
     dataPointValuesHandler();
     setBasicData({

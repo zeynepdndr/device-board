@@ -2,19 +2,20 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Divider } from "primereact/divider";
 import { Splitter, SplitterPanel } from "primereact/splitter";
-import { ProgressSpinner } from "primereact/progressspinner";
 import WeeklyAverageTemp from "../../components/parts/Charts/WeeklyAverageTemp/WeeklyAverageTemp";
 import TemperatureDaily from "../../components/parts/Charts/TemperatureDaily/TemperatureDaily";
 import SystemLog from "../../components/parts/SystemLog/SystemLog";
 import Activity from "../../components/parts/Activity/Activity";
+import Spinner from "../../components/partials/Spinner";
 import { DEVICEURL } from "../../constants/global";
+import ErrorStatus from "../../components/partials/ErrorStatus";
 
 const Sensor = () => {
   const param = useParams();
 
   const [deviceId] = useState(param);
   const [sensorData, setSensorData] = useState<any>();
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const getSensorData = () => {
@@ -27,7 +28,7 @@ const Sensor = () => {
       })
       .catch((err) => {
         setIsLoading(false);
-        setError(true);
+        setError(err.message);
       });
   };
 
@@ -40,16 +41,7 @@ const Sensor = () => {
   let alertData = <div>No data found!</div>;
 
   const loadingStatus = (onContent: boolean) => (
-    <ProgressSpinner
-      style={{
-        width: `${onContent ? "50px" : "30px"}`,
-        height: `${onContent ? "50px" : "30px"}`,
-        margin: 0,
-      }}
-      strokeWidth="7"
-      fill={onContent ? `var(--surface-ground)` : undefined}
-      animationDuration=".8s"
-    />
+    <Spinner onContent={onContent} />
   );
 
   if (sensorData) {
@@ -59,9 +51,9 @@ const Sensor = () => {
   }
 
   if (error) {
-    messageData = <p>Something went wrong!</p>;
-    downTimeData = <p>Something went wrong!</p>;
-    alertData = <p>Something went wrong!</p>;
+    messageData = <ErrorStatus onContent={false} message={error} />;
+    downTimeData = <ErrorStatus onContent={false} message={error} />;
+    alertData = <ErrorStatus onContent={false} message={error} />;
   }
 
   if (isLoading) {

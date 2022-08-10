@@ -44,7 +44,32 @@ const SensorTemperatures = () => {
     setLoadedStatsTime_2(loadedStatsTempPoints_2);
 
     ///////////////////////////////////////////7
+  };
 
+  const getSensorsStats = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("http://localhost:3009/sensor/stats");
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      const data = await response.json();
+      setData(data.results);
+    } catch (error: any) {
+      setError(error.message);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getSensorsStats();
+  }, []);
+
+  useEffect(() => {
+    dataPointValuesHandler();
     setLineData({
       labels: loadedStatsTime_1,
       datasets: [
@@ -64,34 +89,6 @@ const SensorTemperatures = () => {
         },
       ],
     });
-  };
-
-  const getSensorsStats = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch("http://localhost:3009/sensor/stats");
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-
-      const data = await response.json();
-      setData(data.results);
-    } catch (error: any) {
-      setError(error.message);
-    }
-    dataPointValuesHandler();
-
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    getSensorsStats();
-  }, []);
-
-  useEffect(() => {
-    dataPointValuesHandler();
   }, [data]);
 
   const getLightTheme = () => {
