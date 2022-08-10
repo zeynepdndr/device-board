@@ -30,7 +30,8 @@ const SensorList = ({ items }: { items: any }) => {
         >
           <Button
             label="Details"
-            className="p-button-outlined p-button-info mx-5"
+            className="p-button-outlined mx-5"
+            style={{ borderColor: "#270404", color: "#270404" }}
           />
         </Link>
 
@@ -40,8 +41,9 @@ const SensorList = ({ items }: { items: any }) => {
         >
           <Button
             icon="pi pi-pencil"
-            className="p-button-rounded p-button-success"
+            className="p-button-rounded"
             aria-label="Search"
+            style={{ backgroundColor: "#1bd089", borderColor: "#1bd089" }}
           />
         </Link>
       </>

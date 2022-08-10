@@ -49,6 +49,11 @@ const Dashboard = () => {
           label="Add Sensor"
           icon="pi pi-plus"
           aria-label="Submit"
+          style={{
+            borderColor: "#003c1f",
+            color: "#fff",
+            backgroundColor: "#003c1f",
+          }}
           onClick={() => navigate("/add-sensor")}
         />
       </div>
@@ -93,8 +98,11 @@ const Dashboard = () => {
   return (
     <>
       <div className="card p-2 mb-4">
-        <div className="flex card-container indigo-container ">
-          <div className="flex-1 bg-indigo-500 text-white font-bold text-center p-4 border-round">
+        <div className="flex card-container">
+          <div
+            className="flex-1 font-bold text-center p-4 border-round"
+            style={{ backgroundColor: "#eeeeee", color: "#635d60" }}
+          >
             <FaVideo />
             <h4>TOTAL SENSOR</h4>
             {!error && !isLoading && sensorsCount}
@@ -108,13 +116,19 @@ const Dashboard = () => {
               </span>
             )}
           </div>
-          <div className="flex-1  bg-indigo-500 text-white font-bold text-center p-4 border-round mx-4">
+          <div
+            className="flex-1 font-bold text-center p-4 border-round mx-4"
+            style={{ backgroundColor: "#eeeeee", color: "#635d60" }}
+          >
             <FaExclamationCircle />
             <h4>OPEN ALERTS</h4>
             {/* Hard-coded data for open alerts on dashboard, since it is not provided by the api */}
             2
           </div>
-          <div className="flex-1  bg-indigo-500 text-white font-bold text-center p-4 border-round">
+          <div
+            className="flex-1 font-bold text-center p-4 border-round mx-4"
+            style={{ backgroundColor: "#eeeeee", color: "#635d60" }}
+          >
             <FaUsers />
             <h4>TOTAL CUSTOMERS</h4>
             {/* Hard-coded data for total customer on dashboard, since it is not provided by the api */}

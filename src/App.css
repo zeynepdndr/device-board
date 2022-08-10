@@ -1,29 +1,3 @@
-/* .show-container > .rs-container {
-  margin-bottom: 40px;
-}
-
-.show-container > .rs-header,
-.show-container > .rs-content,
-.show-container > .rs-footer,
-.show-container > .rs-sidebar {
-  background-color: #3498ff;
-  color: #fff;
-  text-align: center;
-}
-
-.rs-header,
-.rs-footer {
-  line-height: 56px;
-  background-color: #59afff;
-}
-.rs-content {
-  line-height: 120px;
-  background-color: #80ddff;
-}
-.rs-sidebar {
-  line-height: 120px;
-} */
-
 .show-container > .rs-container {
   margin-bottom: 40px;
 }
@@ -31,8 +5,6 @@
 .rs-content,
 .rs-footer,
 .rs-sidebar {
-  /* background-color: pink; */
-  /* color: #fff; */
   text-align: center;
   color: #000;
   position: relative;
@@ -40,7 +12,6 @@
 
 .rs-content {
   line-height: 120px;
-  /* background-color: plum; */
 }
 .rs-sidebar {
   line-height: 120px;
