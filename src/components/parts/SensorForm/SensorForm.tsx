@@ -1,4 +1,5 @@
 import { FormEvent, useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
@@ -7,6 +8,7 @@ import { classNames } from "primereact/utils";
 import { useParams } from "react-router-dom";
 
 const SensorForm = (props: any) => {
+  const navigate = useNavigate();
   const param = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -83,14 +85,15 @@ const SensorForm = (props: any) => {
     setError(null);
 
     try {
-      const response = await fetch(
-        `http://localhost:3009/sensor/${userInput.enteredSensorId} `,
-        {
-          method: "PUT",
-          body: JSON.stringify({ text: sensorText }),
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      let fetchUrl: RequestInfo = "";
+      if (formMode === "edit")
+        fetchUrl = `http://localhost:3009/sensor/${userInput.enteredSensorId}`;
+      if (formMode === "add") fetchUrl = `http://localhost:3009/sensor`;
+      const response = await fetch(fetchUrl, {
+        method: formMode === "edit" ? "PUT" : "POST",
+        body: JSON.stringify({ text: sensorText }),
+        headers: { "Content-Type": "application/json" },
+      });
       if (!response.ok) {
         throw new Error("Request failed!");
       }
@@ -134,14 +137,22 @@ const SensorForm = (props: any) => {
   return (
     <>
       <div className="card">
-        <h3 className="text-center">
+        <h3
+          style={{
+            fontSize: "35px",
+            color: "#2a333d",
+            fontWeight: "700",
+            marginTop: 0,
+            marginBottom: " 12px",
+          }}
+        >
           {formMode === `edit`
-            ? `Edit Sensor ` + userInput.enteredSensorId
+            ? `Edit Sensor  (  ` + userInput.enteredSensorId + ` )`
             : `Add Sensor`}
         </h3>
         <form onSubmit={submitHandler} className="text-center">
           <div className="flex flex-wrap card-container p-fluid">
-            <div className="flex-column">
+            <div className="flex-1 text-center p-4 border-round mx-4">
               <div className="field mb-5">
                 <span className="p-float-label">
                   <InputText
@@ -203,7 +214,7 @@ const SensorForm = (props: any) => {
                 </span>
               </div>
             </div>
-            <div>
+            <div className="flex-1 text-center p-4 border-round mx-4">
               <div className="flex-column mb-5">
                 <div className="field">
                   <span className="p-float-label">
@@ -258,7 +269,13 @@ const SensorForm = (props: any) => {
               label={formMode === `edit` ? `Update Sensor` : `Add Sensor`}
               className="mr-5"
             />
-            <Button onClick={props.onCancel}>Cancel</Button>
+            <Button
+              onClick={() => {
+                navigate("/dashboard");
+              }}
+            >
+              Cancel
+            </Button>
           </div>
         </form>
       </div>
