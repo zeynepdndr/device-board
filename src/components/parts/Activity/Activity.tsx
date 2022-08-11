@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { Timeline } from "primereact/timeline";
-import { OrderList } from "primereact/orderlist";
 import { ScrollPanel } from "primereact/scrollpanel";
 import {
   sortByTime,
   timeFromNow,
   unixTimeToDate,
 } from "../../../utils/DateUtil";
-import imgg from "../../../assests/img/logo.jpg";
 import { Card } from "primereact/card";
+import Spinner from "../../partials/Spinner";
+import ErrorStatus from "../../partials/ErrorStatus";
 // import { EVENT_DEVICE } from "../../../constants/shared-constants";
 
 const Activity = ({ deviceId }: { deviceId: any }) => {
@@ -26,29 +26,19 @@ const Activity = ({ deviceId }: { deviceId: any }) => {
 
     for (const key in sortedByTime_1) {
       loadedEvents_1.push(timeFromNow(sortedByTime_1[key].time));
-      //   loadedStatsTempPoints_1.push(sortedByTime_1[key].temp);
     }
     setLoadedEvents(loadedEvents_1);
   };
 
   const customizedContent = (item: any) => {
+    console.log(item);
     return (
-      // <div style={{ display: "flex", justifyContent: "space-around" }}>
-      //   <span>{item.status}</span>
-      //   <span>{timeFromNow(item.date)}</span>
-      // </div>
       <Card
         title={item.status}
         subTitle={unixTimeToDate(item.date)}
         className="m-2"
       >
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore
-          sed consequuntur error repudiandae numquam deserunt quisquam repellat
-          libero asperiores earum nam nobis, culpa ratione quam perferendis
-          esse, cupiditate neque quas!
-        </p>
-        {/* <Button label="Read more" className="p-button-text"></Button> */}
+        <p>{item.definition}</p>
       </Card>
     );
   };
@@ -83,10 +73,36 @@ const Activity = ({ deviceId }: { deviceId: any }) => {
         status: item.event_name,
       }));
       setSensorStats(dataPointValues);
+      setIsLoading(false);
     } catch (error: any) {
       setError(error.message);
+      setIsLoading(false);
     }
   }, []);
+
+  let timelineContent = <div>No data found!</div>;
+  const loadingStatus = (onContent: boolean) => (
+    <Spinner onContent={onContent} />
+  );
+
+  if (sensorStats.length > 0) {
+    timelineContent = (
+      <Timeline
+        value={sensorStats}
+        className="customized-timeline"
+        marker={customizedMarker}
+        content={customizedContent}
+        style={{ marginLeft: "-35rem" }}
+      />
+    );
+  }
+  if (error) {
+    timelineContent = <ErrorStatus onContent={true} message={error} />;
+  }
+  if (isLoading) {
+    timelineContent = loadingStatus(true);
+  }
+
   useEffect(() => {
     getSensorsStats();
   }, []);
@@ -95,18 +111,12 @@ const Activity = ({ deviceId }: { deviceId: any }) => {
     dataPointValuesHandler();
   }, [data]);
   return (
-    <div className="card">
+    <div className="card text-center">
       <ScrollPanel
         style={{ width: "100%", height: "485px" }}
         className="custom"
       >
-        <Timeline
-          value={sensorStats}
-          className="customized-timeline"
-          marker={customizedMarker}
-          content={customizedContent}
-          style={{ marginLeft: "-35rem" }}
-        />
+        {timelineContent}
       </ScrollPanel>
     </div>
   );

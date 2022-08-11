@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { Chart } from "primereact/chart";
 import { unixTimeToDate, sortByTime } from "../../../../utils/DateUtil";
+import Spinner from "../../../partials/Spinner";
+import ErrorStatus from "../../../partials/ErrorStatus";
 
 const WeeklyAverageTemp = (props: any) => {
   const { deviceId } = props;
@@ -24,8 +26,6 @@ const WeeklyAverageTemp = (props: any) => {
     }
     setLoadedStatsTemp_1(loadedStatsTempPoints_1);
     setLoadedStatsTime_1(loadedStatsTempPoints_1);
-
-    console.log("loaded data:", sensorStats);
   };
 
   const getSensorsStats = useCallback(async () => {
@@ -42,8 +42,10 @@ const WeeklyAverageTemp = (props: any) => {
 
       const data = await response.json();
       setSensorStats(data.results);
+      setIsLoading(false);
       // setSensorId(deviceId);
     } catch (error: any) {
+      setIsLoading(false);
       setError(error.message);
     }
   }, []);
@@ -115,23 +117,37 @@ const WeeklyAverageTemp = (props: any) => {
 
   const { basicOptions } = getLightTheme();
 
-  return (
-    <div className="card">
-      {/* <div className="m-0" style={{ color: "#292325", fontSize: "1.25rem" }}>
-        WEEKLY AVERAGE TEMP
-      </div> */}
-      <p
-        className="text-left font-bold"
-        style={{ color: "#292325", fontSize: "1.25rem", marginLeft: "1rem" }}
-      >
-        WEEKLY AVERAGE TEMP
-      </p>
+  let chartContent = <div>No data found!</div>;
+  const loadingStatus = (onContent: boolean) => (
+    <Spinner onContent={onContent} />
+  );
+
+  if (sensorStats.length > 0) {
+    chartContent = (
       <Chart
         type="line"
         data={lineData}
         options={basicOptions}
         style={{ height: 222, padding: "1rem" }}
       />
+    );
+  }
+  if (error) {
+    chartContent = <ErrorStatus onContent={true} message={error} />;
+  }
+  if (isLoading) {
+    chartContent = loadingStatus(true);
+  }
+
+  return (
+    <div className="card text-center">
+      <p
+        className="text-left font-bold"
+        style={{ color: "#292325", fontSize: "1.25rem", marginLeft: "1rem" }}
+      >
+        WEEKLY AVERAGE TEMP
+      </p>
+      {chartContent}
     </div>
   );
 };
