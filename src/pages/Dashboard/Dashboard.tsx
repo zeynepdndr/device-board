@@ -79,7 +79,7 @@ const Dashboard = () => {
   }
 
   if (error) {
-    listContent = <ErrorStatus onContent={true} message={"error"} />;
+    listContent = <ErrorStatus onContent={true} message={error} />;
   }
 
   if (isLoading) {

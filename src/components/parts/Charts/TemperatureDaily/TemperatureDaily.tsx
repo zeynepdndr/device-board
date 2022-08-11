@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { Chart } from "primereact/chart";
+
 import { unixTimeToDate, sortByTime } from "../../../../utils/DateUtil";
+import Spinner from "../../../partials/Spinner";
+import ErrorStatus from "../../../partials/ErrorStatus";
 
 const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
   const [error, setError] = useState(null);
@@ -51,7 +54,9 @@ const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
 
       const data = await response.json();
       setData(data.results);
+      setIsLoading(false);
     } catch (error: any) {
+      setIsLoading(false);
       setError(error.message);
     }
   }, []);
@@ -113,6 +118,23 @@ const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
 
   const { basicOptions } = getLightTheme();
 
+  let chartContent = <div>No data found!</div>;
+  const loadingStatus = (onContent: boolean) => (
+    <Spinner onContent={onContent} />
+  );
+
+  if (data.length > 0) {
+    chartContent = (
+      <Chart type="line" data={basicData} options={basicOptions} />
+    );
+  }
+  if (error) {
+    chartContent = <ErrorStatus onContent={true} message={error} />;
+  }
+  if (isLoading) {
+    chartContent = loadingStatus(true);
+  }
+
   return (
     <div>
       <div className="p-card p-component p-4 mb-4 text-center">
@@ -122,13 +144,8 @@ const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
         >
           TEMPERATURE DAILY
         </p>
-        <Chart type="line" data={basicData} options={basicOptions} />
+        {chartContent}
       </div>
-
-      {/* <div className="card">
-        <h5>Line Styles</h5>
-        <Chart type="line" data={lineStylesData} options={basicOptions} />
-      </div> */}
     </div>
   );
 };
