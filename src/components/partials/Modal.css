@@ -1,0 +1,61 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.modal {
+  position: fixed;
+  background: white;
+  top: 30vh;
+  left: 10%;
+  width: 80%;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.modal-header {
+  background: #3fd58f;
+  padding: 1rem;
+  color: white;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: white;
+}
+
+.content {
+  padding: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.modal-actions {
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-actions .button--alt {
+  background-color: white;
+  color: #40005d;
+}
+
+.modal-actions button:hover,
+.modal-actions button:active {
+  background-color: #741188;
+  border-color: #741188;
+  color: white;
+}
+
+@media (min-width: 768px) {
+  .modal {
+    left: calc(50% - 20rem);
+    width: 40rem;
+  }
+}
