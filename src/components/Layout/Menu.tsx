@@ -7,21 +7,18 @@ const Menu = () => {
   return (
     <header>
       <div className={styles["header-left"]}>
-        <Link to={"/"}>
+        <a href={"https://nextbigthing.ag/"}>
           <img
             alt="Next Big Thing Logo"
             src={logo}
             height="40"
             className="mr-2"
           />
-        </Link>
+        </a>
       </div>
       <div>
         <nav>
           <ul>
-            <li>
-              <Link to={"/"}>Home</Link>
-            </li>
             <li>
               <Link to={"/dashboard"}>Dashboard</Link>
             </li>
