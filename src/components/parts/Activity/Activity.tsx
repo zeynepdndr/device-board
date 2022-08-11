@@ -31,7 +31,6 @@ const Activity = ({ deviceId }: { deviceId: any }) => {
   };
 
   const customizedContent = (item: any) => {
-    console.log(item);
     return (
       <Card
         title={item.status}

@@ -11,7 +11,6 @@ const Backdrop: React.FC<BackdropProps> = (props: any) => {
 };
 
 const ModalOverlay = (props: any) => {
-  console.log("propşs", props);
   return (
     <div className="modal">
       <div className="modal-header">{props.title}</div>

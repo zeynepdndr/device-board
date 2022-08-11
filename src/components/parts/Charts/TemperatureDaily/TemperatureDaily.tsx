@@ -12,7 +12,8 @@ const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
   const [loadedStatsTemp_1, setLoadedStatsTemp_1] = useState<any[]>([]);
   const [data, setData] = useState<any[]>([]);
 
-  // @TODO : Make this function dynamic
+  // Set datapoint values to draw chart.
+  // @TODO: Make it dynamic, it should create lines regarding api response not 1 anytime
   const dataPointValuesHandler = () => {
     const loadedStatsTimePoints_1 = [];
     const loadedStatsTempPoints_1 = [];
@@ -25,6 +26,19 @@ const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
     }
     setLoadedStatsTemp_1(loadedStatsTempPoints_1);
     setLoadedStatsTime_1(loadedStatsTempPoints_1);
+
+    setBasicData({
+      labels: loadedStatsTime_1,
+      datasets: [
+        {
+          label: data && data[0] != undefined ? data[0].device_id : "default",
+          data: loadedStatsTemp_1,
+          fill: false,
+          borderColor: "#42A5F5",
+          tension: 0.4,
+        },
+      ],
+    });
   };
 
   const [basicData, setBasicData] = useState({
@@ -67,6 +81,9 @@ const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
 
   useEffect(() => {
     dataPointValuesHandler();
+  }, [data]);
+
+  useEffect(() => {
     setBasicData({
       labels: loadedStatsTime_1,
       datasets: [
@@ -79,7 +96,7 @@ const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
         },
       ],
     });
-  }, [data]);
+  }, [loadedStatsTime_1, loadedStatsTemp_1]);
 
   const getLightTheme = () => {
     let basicOptions = {

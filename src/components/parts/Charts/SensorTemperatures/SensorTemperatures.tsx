@@ -16,7 +16,8 @@ const SensorTemperatures = () => {
   const [data, setData] = useState<any[]>([]);
   const [lineData, setLineData] = useState<any>();
 
-  // @TODO : Make this function dynamic
+  // Set datapoint values to draw chart.
+  // @TODO: Make it dynamic, it should create lines regarding api response not 3 anytime
   const dataPointValuesHandler = async () => {
     const loadedStatsTimePoints_1 = [];
     const loadedStatsTempPoints_1 = [];
@@ -45,32 +46,21 @@ const SensorTemperatures = () => {
     setLoadedStatsTime_2(loadedStatsTempPoints_2);
 
     ///////////////////////////////////////////7
-  };
 
-  const getSensorsStats = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch("http://localhost:3009/sensor/stats");
+    const loadedStatsTimePoints_3 = [];
+    const loadedStatsTempPoints_3 = [];
 
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
+    const sortedByTime_3 = data[2]?.stats.sort(sortByTime);
 
-      const data = await response.json();
-      setData(data.results);
-    } catch (error: any) {
-      setError(error.message);
+    for (const key in sortedByTime_2) {
+      loadedStatsTimePoints_3.push(unixTimeToDate(sortedByTime_3[key].time));
+      loadedStatsTempPoints_3.push(sortedByTime_3[key].temp);
     }
-    setIsLoading(false);
-  };
+    setLoadedStatsTemp_3(loadedStatsTempPoints_3);
+    setLoadedStatsTime_3(loadedStatsTempPoints_3);
 
-  useEffect(() => {
-    getSensorsStats();
-  }, []);
+    ///////////////////////////////////////////7
 
-  useEffect(() => {
-    dataPointValuesHandler();
     setLineData({
       labels: loadedStatsTime_1,
       datasets: [
@@ -88,9 +78,79 @@ const SensorTemperatures = () => {
           borderColor: "#00bb7e",
           tension: 0.4,
         },
+        {
+          label: data && data[2] != undefined ? data[2].device_id : "default",
+          data: loadedStatsTemp_3,
+          fill: false,
+          borderColor: "#ff5753",
+          tension: 0.4,
+        },
       ],
     });
+  };
+
+  const getSensorsStats = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("http://localhost:3009/sensor/stats");
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      const data = await response.json();
+      setData(data.results);
+      console.log("data:", data);
+    } catch (error: any) {
+      setError(error.message);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getSensorsStats();
+  }, []);
+
+  useEffect(() => {
+    dataPointValuesHandler();
   }, [data]);
+
+  useEffect(() => {
+    setLineData({
+      labels: loadedStatsTime_1,
+      datasets: [
+        {
+          label: data && data[0] != undefined ? data[0].device_id : "default",
+          data: loadedStatsTemp_1,
+          fill: false,
+          borderColor: "#42A5F5",
+          tension: 0.4,
+        },
+        {
+          label: data && data[1] != undefined ? data[1].device_id : "default",
+          data: loadedStatsTemp_2,
+          fill: false,
+          borderColor: "#00bb7e",
+          tension: 0.4,
+        },
+        {
+          label: data && data[2] != undefined ? data[2].device_id : "default",
+          data: loadedStatsTemp_3,
+          fill: false,
+          borderColor: "#ff5753",
+          tension: 0.4,
+        },
+      ],
+    });
+  }, [
+    loadedStatsTime_1,
+    loadedStatsTemp_1,
+    loadedStatsTemp_2,
+    loadedStatsTime_2,
+    loadedStatsTime_3,
+    loadedStatsTemp_3,
+  ]);
 
   const getLightTheme = () => {
     let basicOptions = {

@@ -10,6 +10,8 @@ const WeeklyAverageTemp = (props: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadedStatsTime_1, setLoadedStatsTime_1] = useState<any[]>([]);
   const [loadedStatsTemp_1, setLoadedStatsTemp_1] = useState<any[]>([]);
+  const [loadedStatsTime_2, setLoadedStatsTime_2] = useState<any[]>([]);
+  const [loadedStatsTemp_2, setLoadedStatsTemp_2] = useState<any[]>([]);
   // const [sensorId, setSensorId] = useState<string>(deviceId);
   const [sensorStats, setSensorStats] = useState<any[]>([]);
   const [lineData, setLineData] = useState<any>();
@@ -26,6 +28,20 @@ const WeeklyAverageTemp = (props: any) => {
     }
     setLoadedStatsTemp_1(loadedStatsTempPoints_1);
     setLoadedStatsTime_1(loadedStatsTempPoints_1);
+
+    ///////////////////////////////////////////7
+
+    const loadedStatsTimePoints_2 = [];
+    const loadedStatsTempPoints_2 = [];
+
+    const sortedByTime_2 = sensorStats[1]?.stats.sort(sortByTime);
+
+    for (const key in sortedByTime_2) {
+      loadedStatsTimePoints_2.push(unixTimeToDate(sortedByTime_2[key].time));
+      loadedStatsTempPoints_2.push(sortedByTime_2[key].temp);
+    }
+    setLoadedStatsTemp_2(loadedStatsTempPoints_2);
+    setLoadedStatsTime_2(loadedStatsTempPoints_2);
   };
 
   const getSensorsStats = useCallback(async () => {
@@ -43,6 +59,7 @@ const WeeklyAverageTemp = (props: any) => {
       const data = await response.json();
       setSensorStats(data.results);
       setIsLoading(false);
+      console.log("data", data);
       // setSensorId(deviceId);
     } catch (error: any) {
       setIsLoading(false);
@@ -69,10 +86,10 @@ const WeeklyAverageTemp = (props: any) => {
         },
         {
           label: sensorStats[1]?.sensor_id,
-          data: loadedStatsTemp_1,
+          data: loadedStatsTemp_2,
           fill: false,
           borderDash: [5, 5],
-          tension: 0.1,
+          tension: 0.4,
           borderColor: "#7615f5",
         },
       ],
