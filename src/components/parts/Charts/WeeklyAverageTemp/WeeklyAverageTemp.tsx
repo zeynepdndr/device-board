@@ -59,8 +59,6 @@ const WeeklyAverageTemp = (props: any) => {
       const data = await response.json();
       setSensorStats(data.results);
       setIsLoading(false);
-      console.log("data", data);
-      // setSensorId(deviceId);
     } catch (error: any) {
       setIsLoading(false);
       setError(error.message);

@@ -101,7 +101,6 @@ const SensorTemperatures = () => {
 
       const data = await response.json();
       setData(data.results);
-      console.log("data:", data);
     } catch (error: any) {
       setError(error.message);
     }
