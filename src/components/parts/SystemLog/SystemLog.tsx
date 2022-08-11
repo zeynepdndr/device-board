@@ -2,11 +2,12 @@ import { useState, useEffect, useCallback } from "react";
 import { Timeline } from "primereact/timeline";
 import { ScrollPanel } from "primereact/scrollpanel";
 import { sortByTime, timeFromNow } from "../../../utils/DateUtil";
+import Spinner from "../../partials/Spinner";
+import ErrorStatus from "../../partials/ErrorStatus";
 
 const SystemLog = ({ deviceId }: { deviceId: any }) => {
   const [sensorStats, setSensorStats] = useState([]);
   const [error, setError] = useState(null);
-  const [sensorStatsCount, setSensorCounts] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loadedEvents, setLoadedEvents] = useState<any[]>([]);
   const [data, setData] = useState<any[]>([]);
@@ -54,10 +55,37 @@ const SystemLog = ({ deviceId }: { deviceId: any }) => {
         status: "Device online",
       }));
       setSensorStats(dataPointValues);
+      setIsLoading(false);
     } catch (error: any) {
       setError(error.message);
+      setIsLoading(false);
     }
   }, []);
+
+  let timelineContent = <div>No data found!</div>;
+
+  const loadingStatus = (onContent: boolean) => (
+    <Spinner onContent={onContent} />
+  );
+
+  if (data?.length > 0) {
+    timelineContent = (
+      <Timeline
+        value={sensorStats}
+        className="customized-timeline"
+        content={customizedContent}
+        style={{ marginLeft: "-35rem" }}
+      />
+    );
+  }
+
+  if (error) {
+    timelineContent = <ErrorStatus onContent={true} message={error} />;
+  }
+
+  if (isLoading) {
+    timelineContent = loadingStatus(true);
+  }
 
   useEffect(() => {
     getSensorsStats();
@@ -68,13 +96,11 @@ const SystemLog = ({ deviceId }: { deviceId: any }) => {
   }, [data]);
 
   return (
-    <ScrollPanel style={{ width: "100%", height: "485px" }} className="custom">
-      <Timeline
-        value={sensorStats}
-        className="customized-timeline"
-        content={customizedContent}
-        style={{ marginLeft: "-35rem" }}
-      />
+    <ScrollPanel
+      style={{ width: "100%", height: "485px", textAlign: "center" }}
+      className="custom"
+    >
+      {timelineContent}
     </ScrollPanel>
   );
 };

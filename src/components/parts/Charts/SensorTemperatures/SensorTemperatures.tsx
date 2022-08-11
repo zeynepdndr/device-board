@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Chart } from "primereact/chart";
 import { unixTimeToDate, sortByTime } from "../../../../utils/DateUtil";
 import Spinner from "../../../partials/Spinner";
+import ErrorStatus from "../../../partials/ErrorStatus";
 
 const SensorTemperatures = () => {
   const [error, setError] = useState(null);
@@ -140,7 +141,7 @@ const SensorTemperatures = () => {
   }
 
   if (error) {
-    chartContent = <p>Something went wrong!</p>;
+    chartContent = <ErrorStatus onContent={true} message={error} />;
   }
 
   if (isLoading) {
