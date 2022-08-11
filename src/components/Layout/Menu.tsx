@@ -20,19 +20,19 @@ const Menu = () => {
         <nav>
           <ul>
             <li>
-              <Link to={"/dashboard"}>Dashboard</Link>
+              <Link to={"/"}>Dashboard</Link>
             </li>
             <li>
               {/* Hard-coded link to provide exact design */}
-              <Link to={"/dashboard"}>Reports</Link>
+              <Link to={"/"}>Reports</Link>
             </li>
             <li>
               {/* Hard-coded link to provide exact design */}
-              <Link to={"/dashboard"}>Sensor</Link>
+              <Link to={"/"}>Sensor</Link>
             </li>
             <li>
               {/* Hard-coded link to provide exact design */}
-              <Link to={"/dashboard"}>Logout</Link>
+              <Link to={"/"}>Logout</Link>
             </li>
           </ul>
         </nav>

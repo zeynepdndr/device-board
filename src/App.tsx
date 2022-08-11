@@ -31,7 +31,7 @@ function App() {
       <Layout>
         <Routes>
           {/* {getRoutes(routes)} */}
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="sensor/:device_id" element={<Sensor />} />
           <Route path="add-sensor" element={<SensorForm />} />
           <Route

@@ -271,7 +271,7 @@ const SensorForm = (props: any) => {
             />
             <Button
               onClick={() => {
-                navigate("/dashboard");
+                navigate("/");
               }}
             >
               Cancel
