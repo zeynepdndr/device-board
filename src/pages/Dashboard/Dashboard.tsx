@@ -16,7 +16,7 @@ const Dashboard = () => {
   const [sensorsCount, setSensorCounts] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Ensure the function is not created unnecessarily using useCallback
+  // Ensure that the function is not created unnecessarily using useCallback
   const fetchSensorDataHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -28,16 +28,20 @@ const Dashboard = () => {
         throw Error("Something went wrong!");
       }
       const data = await response.json();
+      const results = await data.results;
 
-      const transformedSensors = data.results.map((sensorData: any) => {
-        return {
-          device_id: sensorData.device_id,
-          last_online: sensorData.last_online,
-          last_temp: sensorData.last_temp,
-          location: sensorData.location,
-        };
-      });
-      setSensors(transformedSensors);
+      const loadedSensors = [];
+      for (const key in results) {
+        loadedSensors.push({
+          device_id: results[key].device_id,
+          last_online: results[key].last_online,
+          last_temp: results[key].last_temp,
+          location: results[key].location,
+        });
+      }
+      console.log("l", loadedSensors);
+
+      setSensors(loadedSensors);
       setIsLoading(false);
       setSensorCounts(data.paging.count);
     } catch (err: any) {

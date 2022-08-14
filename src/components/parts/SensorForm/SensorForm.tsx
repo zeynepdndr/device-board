@@ -1,108 +1,81 @@
-import { FormEvent, useState, useEffect, useRef } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { classNames } from "primereact/utils";
 import { useParams } from "react-router-dom";
+import useInput from "../../../hooks/use-input";
 
 const SensorForm = (props: any) => {
   const navigate = useNavigate();
   const param = useParams();
 
+  const {
+    value: enteredSensorId,
+    isValid: enteredSensorIdIsValid,
+    hasError: sensorIdInputHasError,
+    valueChangeHandler: sensorIdChangeHandler,
+    inputBlurHandler: sensorIdBlurHandler,
+    reset: resetSensorIdInput,
+  } = useInput((value: any) => value.trim() !== "");
+
+  const {
+    value: enteredLocation,
+    isValid: enteredLocationIsValid,
+    hasError: locationInputHasError,
+    valueChangeHandler: locationChangeHandler,
+    inputBlurHandler: locationBlurHandler,
+    reset: resetLocationInput,
+  } = useInput((value: any) => value.trim() !== "");
+
+  const {
+    value: enteredCustomer,
+    isValid: enteredCustomerIsValid,
+    hasError: customerInputHasError,
+    valueChangeHandler: customerChangeHandler,
+    inputBlurHandler: customerBlurHandler,
+    reset: resetCustomerInput,
+  } = useInput((value: any) => value.trim() !== "");
+
+  let formIsValid = false;
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [enteredSensorIdError, setEnteredNameError] = useState(false);
-  const [enteredLocationError, setEnteredLocationError] = useState(false);
-  const [enteredCustomerError, setEnteredCustomerError] = useState(false);
-  const [isFormValid, setIsFormValid] = useState(
-    !enteredCustomerError && !enteredSensorIdError && !enteredLocationError
-  );
   const [formMode, setFormMode] = useState<string>("add");
 
-  const [userInput, setUserInput] = useState<{
-    enteredSensorId: string;
-    enteredLocation: string;
-    enteredCustomer: string;
-  }>({
-    enteredSensorId: "",
-    enteredLocation: "",
-    enteredCustomer: "",
-  });
+  if (
+    enteredSensorIdIsValid &&
+    enteredLocationIsValid &&
+    enteredCustomerIsValid
+  ) {
+    formIsValid = true;
+  }
 
-  const sensorIdChangeHandler = (event: any) => {
-    //pass in a function to setState
-    //it will receives snapshot of the previous state, safer way to get latest state
-    if (event.target.value.trim().length === 0) {
-      setEnteredNameError(true);
-    } else setEnteredNameError(false);
-
-    setIsFormValid(
-      event.target.value.trim().length > 0 &&
-        !enteredCustomerError &&
-        !enteredSensorIdError &&
-        !enteredLocationError
-    );
-
-    setUserInput((prevState) => {
-      return { ...prevState, enteredSensorId: event.target.value };
-    });
-  };
-
-  const locationChangeHandler = (event: any) => {
-    setEnteredLocationError(false);
-    setUserInput({ ...userInput, enteredLocation: event.target.value });
-  };
-
-  const customerChangeHandler = (event: any) => {
-    setEnteredCustomerError(false);
-    setUserInput({ ...userInput, enteredCustomer: event.target.value });
-  };
-
-  const errorHandler = () => {
-    if (
-      userInput.enteredSensorId === "" ||
-      userInput.enteredSensorId.trim().length === 0
-    ) {
-      setEnteredNameError(true);
-      setIsFormValid(false);
-    }
-    if (
-      userInput.enteredLocation === "" ||
-      userInput.enteredLocation.trim().length === 0
-    ) {
-      setEnteredLocationError(true);
-      setIsFormValid(false);
-    }
-    if (
-      userInput.enteredCustomer === "" ||
-      userInput.enteredCustomer.trim().length === 0
-    ) {
-      setEnteredCustomerError(true);
-      setIsFormValid(false);
-    }
-  };
-  const onSaveSensorData = async (sensorText: any) => {
+  console.log("sensorIdInputHasError", sensorIdInputHasError);
+  const onSaveSensorData = async (sensorData: any) => {
     setIsLoading(true);
     setError(null);
-
-    console.log("we are adding", userInput, isFormValid);
 
     try {
       let fetchUrl: RequestInfo = "";
       if (formMode === "edit")
-        fetchUrl = `http://localhost:3009/sensor/${userInput.enteredSensorId}`;
+        fetchUrl = `http://localhost:3009/sensor/${enteredSensorId}`;
       if (formMode === "add") fetchUrl = `http://localhost:3009/sensor`;
+
       const response = await fetch(fetchUrl, {
         method: formMode === "edit" ? "PUT" : "POST",
-        body: JSON.stringify({ text: sensorText }),
+        body: JSON.stringify(sensorData),
         headers: { "Content-Type": "application/json" },
       });
+
       if (!response.ok) {
         throw new Error("Request failed!");
       }
+
       const data = await response.json();
+
+      console.log("data:", data);
     } catch (err: any) {
       setError(err.message || "Something went wrong!");
     }
@@ -110,179 +83,176 @@ const SensorForm = (props: any) => {
   };
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
-    errorHandler();
 
-    if (!isFormValid) return;
+    if (!formIsValid) return;
 
-    const SensorData = {
-      customer: userInput.enteredCustomer,
-      sensorId: userInput.enteredSensorId,
-      location: userInput.enteredLocation,
+    const sensorData = {
+      result: {
+        device_id: enteredSensorId,
+        last_online: "",
+        last_temp: 0,
+        customer: enteredCustomer,
+        location: enteredLocation,
+        overview: {
+          total_messages: 0,
+          down_time: 0,
+          alerts: 0,
+        },
+      },
     };
 
-    onSaveSensorData(SensorData);
+    onSaveSensorData(sensorData);
+    resetCustomerInput();
+    resetLocationInput();
+    resetSensorIdInput();
   };
-
-  useEffect(() => {
-    errorHandler();
-  }, [enteredCustomerError, enteredLocationError, enteredSensorIdError]);
 
   useEffect(() => {
     if (Object.keys(param).length !== 0) {
       setFormMode("edit");
-      setUserInput({
-        enteredSensorId: param.device_id || "",
-        enteredCustomer: param.customer || "",
-        enteredLocation: param.location || "",
-      });
+      // setUserInput({
+      //   enteredSensorId: param.device_id || "",
+      //   enteredCustomer: param.customer || "",
+      //   enteredLocation: param.location || "",
+      // });
     }
   }, []);
+
   return (
-    <>
-      <div className="card">
-        <h3
-          style={{
-            fontSize: "35px",
-            color: "#2a333d",
-            fontWeight: "700",
-            marginTop: 0,
-            marginBottom: " 12px",
-          }}
-        >
-          {formMode === `edit`
-            ? `Edit Sensor  (  ` + userInput.enteredSensorId + ` )`
-            : `Add Sensor`}
-        </h3>
-        <form onSubmit={submitHandler} className="text-center">
-          <div className="flex flex-wrap card-container p-fluid">
-            <div className="flex-1 text-center p-4 border-round mx-4">
-              <div className="field mb-5">
+    <div className="card">
+      <h3
+        style={{
+          fontSize: "35px",
+          color: "#2a333d",
+          fontWeight: "700",
+          marginTop: 0,
+          marginBottom: " 12px",
+        }}
+      >
+        {formMode === `edit`
+          ? `Edit Sensor  (  ` + enteredSensorId + ` )`
+          : `Add Sensor`}
+      </h3>
+      <form onSubmit={submitHandler} className="text-center">
+        <div className="flex flex-wrap card-container p-fluid">
+          <div className="flex-1 text-center p-4 border-round mx-4">
+            <div className="field mb-5">
+              <span className="p-float-label">
+                <InputText
+                  id="sensorId"
+                  value={enteredSensorId}
+                  onChange={sensorIdChangeHandler}
+                  onBlur={sensorIdBlurHandler}
+                  autoFocus
+                  className={classNames({
+                    "p-invalid": sensorIdInputHasError,
+                  })}
+                />
+                <label
+                  htmlFor="sensorId"
+                  className={classNames({ "p-error": sensorIdInputHasError })}
+                >
+                  Sensor ID*
+                </label>
+              </span>
+            </div>
+            <div className="field mb-5">
+              <span className="p-float-label">
+                <InputText
+                  id="location"
+                  name="location"
+                  value={enteredLocation}
+                  onChange={locationChangeHandler}
+                  onBlur={locationBlurHandler}
+                  autoFocus
+                  className={classNames({
+                    "p-invalid": locationInputHasError,
+                  })}
+                />
+                <label
+                  htmlFor="location"
+                  className={classNames({ "p-error": locationInputHasError })}
+                >
+                  Location*
+                </label>
+              </span>
+            </div>
+            <div className="field mb-5">
+              <span className="p-float-label p-input-icon-right">
+                <i className="pi pi-envelope" />
+                <InputText
+                  id="customer"
+                  name="customer"
+                  value={enteredCustomer}
+                  onChange={customerChangeHandler}
+                  onBlur={customerBlurHandler}
+                  autoFocus
+                  className={classNames({
+                    "p-invalid": customerInputHasError,
+                  })}
+                />
+                <label
+                  htmlFor="customer"
+                  className={classNames({ "p-error": customerInputHasError })}
+                >
+                  Customer*
+                </label>
+              </span>
+            </div>
+          </div>
+          <div className="flex-1 text-center p-4 border-round mx-4">
+            <div className="flex-column mb-5">
+              <div className="field">
                 <span className="p-float-label">
-                  <InputText
-                    id="sensorId"
-                    value={userInput.enteredSensorId}
-                    onChange={sensorIdChangeHandler}
-                    autoFocus
-                    className={classNames({
-                      "p-invalid": enteredSensorIdError,
-                    })}
-                  />
-                  <label
-                    htmlFor="sensorId"
-                    className={classNames({ "p-error": enteredSensorIdError })}
-                  >
-                    Sensor ID*
-                  </label>
+                  <InputText id="minTemp" name="minTemp" />
+                  <label htmlFor="minTemp">Min Temp. Threshold</label>
                 </span>
               </div>
-              <div className="field mb-5">
-                <span className="p-float-label">
-                  <InputText
-                    id="location"
-                    name="location"
-                    value={userInput.enteredLocation}
-                    onChange={locationChangeHandler}
-                    autoFocus
-                    className={classNames({
-                      "p-invalid": enteredLocationError,
-                    })}
-                  />
-                  <label
-                    htmlFor="location"
-                    className={classNames({ "p-error": enteredLocationError })}
-                  >
-                    Location*
-                  </label>
-                </span>
-              </div>
-              <div className="field mb-5">
-                <span className="p-float-label p-input-icon-right">
-                  <i className="pi pi-envelope" />
-                  <InputText
-                    id="customer"
-                    name="customer"
-                    value={userInput.enteredCustomer}
-                    onChange={customerChangeHandler}
-                    autoFocus
-                    className={classNames({
-                      "p-invalid": enteredCustomerError,
-                    })}
-                  />
-                  <label
-                    htmlFor="customer"
-                    className={classNames({ "p-error": enteredCustomerError })}
-                  >
-                    Customer*
-                  </label>
-                </span>
+              <div className="field-checkbox">
+                <Checkbox
+                  inputId="accept"
+                  name="accept"
+                  checked={null}
+                  onChange={() => {}}
+                />
+                <label htmlFor="accept">Monitor Min Temperature</label>
               </div>
             </div>
-            <div className="flex-1 text-center p-4 border-round mx-4">
-              <div className="flex-column mb-5">
-                <div className="field">
-                  <span className="p-float-label">
-                    <InputText
-                      id="minTemp"
-                      name="minTemp"
-                      value={userInput.enteredLocation}
-                      onChange={locationChangeHandler}
-                      autoFocus
-                    />
-                    <label htmlFor="minTemp">Min Temp. Threshold</label>
-                  </span>
-                </div>
-                <div className="field-checkbox">
-                  <Checkbox
-                    inputId="accept"
-                    name="accept"
-                    checked={null}
-                    onChange={() => {}}
-                  />
-                  <label htmlFor="accept">Monitor Min Temperature</label>
-                </div>
+            <div className="flex-column">
+              <div className="field">
+                <span className="p-float-label">
+                  <InputText id="maxTemp" name="maxTemp" autoFocus />
+                  <label htmlFor="maxTemp">Max Temp. Threshold</label>
+                </span>
               </div>
-              <div className="flex-column">
-                <div className="field">
-                  <span className="p-float-label">
-                    <InputText
-                      id="maxTemp"
-                      name="maxTemp"
-                      value={userInput.enteredLocation}
-                      onChange={locationChangeHandler}
-                      autoFocus
-                    />
-                    <label htmlFor="maxTemp">Max Temp. Threshold</label>
-                  </span>
-                </div>
-                <div className="field-checkbox">
-                  <Checkbox
-                    inputId="accept"
-                    name="accept"
-                    checked={null}
-                    onChange={() => {}}
-                  />
-                  <label htmlFor="accept">Monitor Max Temperature</label>
-                </div>
+              <div className="field-checkbox">
+                <Checkbox
+                  inputId="accept"
+                  name="accept"
+                  checked={null}
+                  onChange={() => {}}
+                />
+                <label htmlFor="accept">Monitor Max Temperature</label>
               </div>
             </div>
           </div>
-          <div className="new-book__actions">
-            <Button
-              type="submit"
-              label={formMode === `edit` ? `Update Sensor` : `Add Sensor`}
-              className="mr-5"
-            />
-            <Button
-              onClick={() => {
-                navigate("/");
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </div>
-    </>
+        </div>
+        <div className="new-book__actions">
+          <Button
+            type="submit"
+            label={formMode === `edit` ? `Update Sensor` : `Add Sensor`}
+            className="mr-5"
+          />
+          <Button
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
 
