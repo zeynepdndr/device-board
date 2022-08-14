@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
@@ -16,24 +16,39 @@ const Dashboard = () => {
   const [sensorsCount, setSensorCounts] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getSensors = async () => {
+  // Ensure the function is not created unnecessarily using useCallback
+  const fetchSensorDataHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    fetch(DEVICESURL)
-      .then((res) => res.json())
-      .then((json) => {
-        setSensors(json.results);
-        setIsLoading(false);
-        setSensorCounts(json.paging.count);
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        setError(err.message);
+
+    try {
+      const response = await fetch(DEVICESURL);
+
+      if (!response.ok) {
+        throw Error("Something went wrong!");
+      }
+      const data = await response.json();
+
+      const transformedSensors = data.results.map((sensorData: any) => {
+        return {
+          device_id: sensorData.device_id,
+          last_online: sensorData.last_online,
+          last_temp: sensorData.last_temp,
+          location: sensorData.location,
+        };
       });
-  };
+      setSensors(transformedSensors);
+      setIsLoading(false);
+      setSensorCounts(data.paging.count);
+    } catch (err: any) {
+      setIsLoading(false);
+      setError(err.message);
+    }
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
-    getSensors();
+    fetchSensorDataHandler();
   }, []);
 
   const headerChart = (
@@ -69,7 +84,7 @@ const Dashboard = () => {
     </div>
   );
 
-  let listContent = <div>No data found!</div>;
+  let listContent = <div>Found no sensors.</div>;
   const loadingStatus = (onContent: boolean) => (
     <Spinner onContent={onContent} />
   );

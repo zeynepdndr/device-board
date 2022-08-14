@@ -68,21 +68,26 @@ const SensorForm = (props: any) => {
       setEnteredNameError(true);
       setIsFormValid(false);
     }
-    if (userInput.enteredLocation === "") {
+    if (
+      userInput.enteredLocation === "" ||
+      userInput.enteredLocation.trim().length === 0
+    ) {
       setEnteredLocationError(true);
       setIsFormValid(false);
     }
-    if (userInput.enteredCustomer === "") {
+    if (
+      userInput.enteredCustomer === "" ||
+      userInput.enteredCustomer.trim().length === 0
+    ) {
       setEnteredCustomerError(true);
       setIsFormValid(false);
     }
-    setIsFormValid(
-      !enteredCustomerError && !enteredSensorIdError && !enteredLocationError
-    );
   };
   const onSaveSensorData = async (sensorText: any) => {
     setIsLoading(true);
     setError(null);
+
+    console.log("we are adding", userInput, isFormValid);
 
     try {
       let fetchUrl: RequestInfo = "";
@@ -116,13 +121,11 @@ const SensorForm = (props: any) => {
     };
 
     onSaveSensorData(SensorData);
-    setUserInput({
-      enteredSensorId: "",
-      enteredLocation: "",
-      enteredCustomer: "",
-    });
-    setIsFormValid(false);
   };
+
+  useEffect(() => {
+    errorHandler();
+  }, [enteredCustomerError, enteredLocationError, enteredSensorIdError]);
 
   useEffect(() => {
     if (Object.keys(param).length !== 0) {
