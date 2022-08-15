@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Divider } from "primereact/divider";
 import { Splitter, SplitterPanel } from "primereact/splitter";
 import WeeklyAverageTemp from "../../components/parts/Charts/WeeklyAverageTemp/WeeklyAverageTemp";
@@ -8,32 +8,18 @@ import SystemLog from "../../components/parts/SystemLog/SystemLog";
 import Activity from "../../components/parts/Activity/Activity";
 import Spinner from "../../components/partials/Spinner";
 import ErrorStatus from "../../components/partials/ErrorStatus";
+import useHttp from "../../hooks/use-http";
+import { getSingleSensor } from "../../lib/api";
 
 const SensorDetail = () => {
   const param = useParams();
+  const { deviceId } = param;
 
-  const [deviceId] = useState(param);
-  const [sensorData, setSensorData] = useState<any>();
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const getSensorData = () => {
-    setIsLoading(true);
-    // fetch(DEVICEURL + `${deviceId} `)
-    //   .then((res) => res.json())
-    //   .then((json) => {
-    //     setSensorData(json.result);
-    //     setIsLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     setIsLoading(false);
-    //     setError(err.message);
-    //   });
-  };
+  const { sendRequest, status, error, data } = useHttp(getSingleSensor, true);
 
   useEffect(() => {
-    getSensorData();
-  }, []);
+    sendRequest(param.device_id);
+  }, [sendRequest]);
 
   let messageData = <div>No data found!</div>;
   let downTimeData = <div>No data found!</div>;
@@ -43,10 +29,10 @@ const SensorDetail = () => {
     <Spinner onContent={onContent} />
   );
 
-  if (sensorData) {
-    messageData = <p>{sensorData?.overview?.total_messages}</p>;
-    downTimeData = <p>{sensorData?.overview?.down_time}</p>;
-    alertData = <p>{sensorData?.overview?.alerts}</p>;
+  if (data) {
+    messageData = <p>{data?.result?.overview?.total_messages}</p>;
+    downTimeData = <p>{data?.result?.overview?.down_time}</p>;
+    alertData = <p>{data?.result?.overview?.alerts}</p>;
   }
 
   if (error) {
@@ -55,7 +41,7 @@ const SensorDetail = () => {
     alertData = <ErrorStatus onContent={false} message={error} />;
   }
 
-  if (isLoading) {
+  if (status === "pending") {
     messageData = loadingStatus(false);
     downTimeData = loadingStatus(false);
     alertData = loadingStatus(false);
@@ -84,7 +70,7 @@ const SensorDetail = () => {
             </div>
           </SplitterPanel>
           <SplitterPanel>
-            <WeeklyAverageTemp deviceId={deviceId.toLocaleString()} />
+            <WeeklyAverageTemp deviceId={deviceId?.toLocaleString()} />
           </SplitterPanel>
         </Splitter>
       </div>

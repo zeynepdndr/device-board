@@ -22,19 +22,17 @@ export async function getAllSensors() {
 }
 
 export async function getSingleSensor(sensorId: any) {
+  console.log("single", sensorId);
   const response = await fetch(`${API_DOMAIN}/sensor/${sensorId}`);
   const data = await response.json();
+
+  console.log("api", data);
 
   if (!response.ok) {
     throw new Error(data.message || "Could not fetch sensor.");
   }
 
-  const loadedSensor = {
-    id: sensorId,
-    ...data,
-  };
-
-  return loadedSensor;
+  return data;
 }
 
 export async function addSensor(sensorData: any) {

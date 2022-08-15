@@ -15,7 +15,7 @@ const Dashboard = () => {
   const {
     sendRequest,
     status,
-    error: apiError,
+    error,
     data: sensors,
   } = useHttp(getAllSensors, true);
 
@@ -66,8 +66,8 @@ const Dashboard = () => {
     listContent = <SensorList items={sensors.loadedSensors} />;
   }
 
-  if (apiError) {
-    listContent = <ErrorStatus onContent={true} message={apiError} />;
+  if (error) {
+    listContent = <ErrorStatus onContent={true} message={error} />;
   }
 
   if (status === "pending") {
@@ -84,9 +84,9 @@ const Dashboard = () => {
           >
             <FaVideo />
             <h4>TOTAL SENSOR</h4>
-            {!apiError && status !== "pending" && sensors.count}
+            {!error && status !== "pending" && sensors.count}
             {status === "pending" && loadingStatus(false)}
-            {apiError && <ErrorStatus onContent={false} message={apiError} />}
+            {error && <ErrorStatus onContent={false} message={error} />}
           </div>
           <div
             className="flex-1 font-bold text-center p-4 border-round mx-4"
