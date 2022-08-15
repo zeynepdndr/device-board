@@ -25,7 +25,7 @@ const SensorList = ({ items }: { items: any }) => {
         />
 
         <Link
-          to={`/sensor/${rowData.device_id}`}
+          to={`/sensors/${rowData.device_id}`}
           style={{ textDecoration: "none" }}
         >
           <Button

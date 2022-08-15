@@ -5,11 +5,20 @@ import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { classNames } from "primereact/utils";
 import { useParams } from "react-router-dom";
-import useInput from "../../../hooks/use-input";
+import useInput from "../../hooks/use-input";
 
-const SensorForm = (props: any) => {
+const SensorForm = () => {
   const navigate = useNavigate();
   const param = useParams();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [formMode, setFormMode] = useState<string>("add");
+  const [userInput, setUserInput] = useState({
+    enteredSensorId: "",
+    enteredLocation: "",
+    enteredCustomer: "",
+  });
 
   const {
     value: enteredSensorId,
@@ -18,7 +27,7 @@ const SensorForm = (props: any) => {
     valueChangeHandler: sensorIdChangeHandler,
     inputBlurHandler: sensorIdBlurHandler,
     reset: resetSensorIdInput,
-  } = useInput((value: any) => value.trim() !== "");
+  } = useInput((value: any) => value.trim() !== "", userInput.enteredSensorId);
 
   const {
     value: enteredLocation,
@@ -27,7 +36,7 @@ const SensorForm = (props: any) => {
     valueChangeHandler: locationChangeHandler,
     inputBlurHandler: locationBlurHandler,
     reset: resetLocationInput,
-  } = useInput((value: any) => value.trim() !== "");
+  } = useInput((value: any) => value.trim() !== "", userInput.enteredLocation);
 
   const {
     value: enteredCustomer,
@@ -36,13 +45,9 @@ const SensorForm = (props: any) => {
     valueChangeHandler: customerChangeHandler,
     inputBlurHandler: customerBlurHandler,
     reset: resetCustomerInput,
-  } = useInput((value: any) => value.trim() !== "");
+  } = useInput((value: any) => value.trim() !== "", userInput.enteredCustomer);
 
   let formIsValid = false;
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [formMode, setFormMode] = useState<string>("add");
 
   if (
     enteredSensorIdIsValid &&
@@ -52,7 +57,6 @@ const SensorForm = (props: any) => {
     formIsValid = true;
   }
 
-  console.log("sensorIdInputHasError", sensorIdInputHasError);
   const onSaveSensorData = async (sensorData: any) => {
     setIsLoading(true);
     setError(null);
@@ -74,18 +78,18 @@ const SensorForm = (props: any) => {
       }
 
       const data = await response.json();
-
-      console.log("data:", data);
     } catch (err: any) {
       setError(err.message || "Something went wrong!");
     }
     setIsLoading(false);
   };
+
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
 
-    if (!formIsValid) return;
-
+    if (!formIsValid) {
+      return;
+    }
     const sensorData = {
       result: {
         device_id: enteredSensorId,
@@ -110,11 +114,11 @@ const SensorForm = (props: any) => {
   useEffect(() => {
     if (Object.keys(param).length !== 0) {
       setFormMode("edit");
-      // setUserInput({
-      //   enteredSensorId: param.device_id || "",
-      //   enteredCustomer: param.customer || "",
-      //   enteredLocation: param.location || "",
-      // });
+      setUserInput({
+        enteredSensorId: param.device_id || "",
+        enteredCustomer: param.customer || "",
+        enteredLocation: param.location || "",
+      });
     }
   }, []);
 
@@ -143,7 +147,6 @@ const SensorForm = (props: any) => {
                   value={enteredSensorId}
                   onChange={sensorIdChangeHandler}
                   onBlur={sensorIdBlurHandler}
-                  autoFocus
                   className={classNames({
                     "p-invalid": sensorIdInputHasError,
                   })}
@@ -164,7 +167,6 @@ const SensorForm = (props: any) => {
                   value={enteredLocation}
                   onChange={locationChangeHandler}
                   onBlur={locationBlurHandler}
-                  autoFocus
                   className={classNames({
                     "p-invalid": locationInputHasError,
                   })}
@@ -186,7 +188,6 @@ const SensorForm = (props: any) => {
                   value={enteredCustomer}
                   onChange={customerChangeHandler}
                   onBlur={customerBlurHandler}
-                  autoFocus
                   className={classNames({
                     "p-invalid": customerInputHasError,
                   })}
@@ -221,7 +222,7 @@ const SensorForm = (props: any) => {
             <div className="flex-column">
               <div className="field">
                 <span className="p-float-label">
-                  <InputText id="maxTemp" name="maxTemp" autoFocus />
+                  <InputText id="maxTemp" name="maxTemp" />
                   <label htmlFor="maxTemp">Max Temp. Threshold</label>
                 </span>
               </div>
@@ -237,15 +238,16 @@ const SensorForm = (props: any) => {
             </div>
           </div>
         </div>
-        <div className="new-book__actions">
+        <div>
           <Button
             type="submit"
             label={formMode === `edit` ? `Update Sensor` : `Add Sensor`}
             className="mr-5"
+            disabled={!formIsValid}
           />
           <Button
             onClick={() => {
-              navigate("/");
+              navigate("/dashboard");
             }}
           >
             Cancel

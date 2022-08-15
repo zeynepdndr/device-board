@@ -39,7 +39,6 @@ const Dashboard = () => {
           location: results[key].location,
         });
       }
-      console.log("l", loadedSensors);
 
       setSensors(loadedSensors);
       setIsLoading(false);

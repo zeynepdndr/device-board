@@ -10,7 +10,7 @@ import Spinner from "../../components/partials/Spinner";
 import { DEVICEURL } from "../../constants/global";
 import ErrorStatus from "../../components/partials/ErrorStatus";
 
-const Sensor = () => {
+const SensorDetail = () => {
   const param = useParams();
 
   const [deviceId] = useState(param);
@@ -20,7 +20,7 @@ const Sensor = () => {
 
   const getSensorData = () => {
     setIsLoading(true);
-    fetch(DEVICEURL + `${param.device_id} `)
+    fetch(DEVICEURL + `${deviceId} `)
       .then((res) => res.json())
       .then((json) => {
         setSensorData(json.result);
@@ -122,4 +122,4 @@ const Sensor = () => {
   );
 };
 
-export default Sensor;
+export default SensorDetail;

@@ -20,7 +20,7 @@ const Menu = () => {
         <nav>
           <ul>
             <li>
-              <Link to={"/"}>Dashboard</Link>
+              <Link to={"/dashboard"}>Dashboard</Link>
             </li>
             <li>
               {/* Hard-coded link to provide exact design */}

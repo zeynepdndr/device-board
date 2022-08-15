@@ -1,21 +1,17 @@
 //To manage the state and the logic for an input
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const useInput = (validateValue: Function) => {
-  const [enteredValue, setEnteredValue] = useState("");
+const useInput = (validateValue: Function, initialValue: any) => {
+  const [enteredValue, setEnteredValue] = useState(initialValue);
   const [isTouched, setIsTouched] = useState(false);
 
   const valueIsValid = validateValue(enteredValue);
-
-  console.log("valueIsValid:", valueIsValid);
-  console.log("isTouched:", isTouched);
   const hasError = !valueIsValid && isTouched;
 
   const valueChangeHandler = (e: React.FormEvent<HTMLInputElement>) => {
     setEnteredValue(e.currentTarget.value);
   };
-
   const inputBlurHandler = () => {
     setIsTouched(true);
   };
@@ -24,6 +20,10 @@ const useInput = (validateValue: Function) => {
     setEnteredValue("");
     setIsTouched(false);
   };
+
+  useEffect(() => {
+    setEnteredValue(initialValue);
+  }, [initialValue]);
 
   return {
     value: enteredValue,
