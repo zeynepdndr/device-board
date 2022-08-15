@@ -1,42 +1,24 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import { Timeline } from "primereact/timeline";
 import { ScrollPanel } from "primereact/scrollpanel";
-import {
-  sortByTime,
-  timeFromNow,
-  unixTimeToDate,
-} from "../../../utils/DateUtil";
+import { unixTimeToDate } from "../../../utils/DateUtil";
 import { Card } from "primereact/card";
 import Spinner from "../../partials/Spinner";
 import ErrorStatus from "../../partials/ErrorStatus";
+import useHttp from "../../../hooks/use-http";
+import { getSensorEvents } from "../../../lib/api";
 
 const Activity = ({ deviceId }: { deviceId: any }) => {
-  const [sensorStats, setSensorStats] = useState([]);
-  const [error, setError] = useState(null);
-  const [sensorStatsCount, setSensorCounts] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadedEvents, setLoadedEvents] = useState<any[]>([]);
-  const [data, setData] = useState<any[]>([]);
-
-  const dataPointValuesHandler = () => {
-    const loadedEvents_1: any[] = [];
-
-    const sortedByTime_1 = data?.sort(sortByTime);
-
-    for (const key in sortedByTime_1) {
-      loadedEvents_1.push(timeFromNow(sortedByTime_1[key].time));
-    }
-    setLoadedEvents(loadedEvents_1);
-  };
+  const { sendRequest, status, error, data } = useHttp(getSensorEvents, true);
 
   const customizedContent = (item: any) => {
     return (
       <Card
-        title={item.status}
-        subTitle={unixTimeToDate(item.date)}
+        title={item.event_name}
+        subTitle={unixTimeToDate(item.time)}
         className="m-2"
       >
-        <p>{item.definition}</p>
+        <p>{item.description}</p>
       </Card>
     );
   };
@@ -49,44 +31,15 @@ const Activity = ({ deviceId }: { deviceId: any }) => {
     );
   };
 
-  const getSensorsStats = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(
-        `http://localhost:3009/sensor/${deviceId}/events`
-      );
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-      const data = await response.json();
-      setData(data.results);
-
-      const dataPointValues = data.results.map((item: any) => ({
-        date: item.time,
-        definition: item.description,
-        icon: "pi pi-check'",
-        color: "#9C27B0",
-        status: item.event_name,
-      }));
-      setSensorStats(dataPointValues);
-      setIsLoading(false);
-    } catch (error: any) {
-      setError(error.message);
-      setIsLoading(false);
-    }
-  }, []);
-
   let timelineContent = <div>No data found!</div>;
   const loadingStatus = (onContent: boolean) => (
     <Spinner onContent={onContent} />
   );
 
-  if (sensorStats.length > 0) {
+  if (data?.length > 0) {
     timelineContent = (
       <Timeline
-        value={sensorStats}
+        value={data}
         className="customized-timeline"
         marker={customizedMarker}
         content={customizedContent}
@@ -97,17 +50,14 @@ const Activity = ({ deviceId }: { deviceId: any }) => {
   if (error) {
     timelineContent = <ErrorStatus onContent={true} message={error} />;
   }
-  if (isLoading) {
+  if (status === "pending") {
     timelineContent = loadingStatus(true);
   }
 
   useEffect(() => {
-    getSensorsStats();
-  }, []);
+    sendRequest(deviceId);
+  }, [sendRequest]);
 
-  useEffect(() => {
-    dataPointValuesHandler();
-  }, [data]);
   return (
     <div className="card text-center">
       <ScrollPanel
