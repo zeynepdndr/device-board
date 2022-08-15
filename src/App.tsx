@@ -18,13 +18,14 @@ import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 import Layout from "./components/Layout/Layout";
 import SensorDetail from "./pages/SensorDetail/SensorDetail";
+import NotFound from "./pages/NotFound/NotFound";
 
 function App() {
   return (
     <Layout>
       <Routes>
         {/* {getRoutes(routes)} */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/sensors/:device_id" element={<SensorDetail />} />
         <Route path="/add-sensor" element={<SensorForm />} />
@@ -32,6 +33,7 @@ function App() {
           path="/edit-sensor/:device_id/:location/:customer"
           element={<SensorForm />}
         />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
   );

@@ -6,10 +6,22 @@ import { Checkbox } from "primereact/checkbox";
 import { classNames } from "primereact/utils";
 import { useParams } from "react-router-dom";
 import useInput from "../../hooks/use-input";
+import useHttp from "../../hooks/use-http";
+import { addSensor, updateSensor } from "../../lib/api";
 
 const SensorForm = () => {
   const navigate = useNavigate();
   const param = useParams();
+  const {
+    sendRequest: sendPostRequest,
+    status: postStatus,
+    error: postApiError,
+  } = useHttp(addSensor);
+  const {
+    sendRequest: sendPutRequest,
+    status: putStatus,
+    error: putApiError,
+  } = useHttp(updateSensor);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -61,27 +73,14 @@ const SensorForm = () => {
     setIsLoading(true);
     setError(null);
 
-    try {
-      let fetchUrl: RequestInfo = "";
-      if (formMode === "edit")
-        fetchUrl = `http://localhost:3009/sensor/${enteredSensorId}`;
-      if (formMode === "add") fetchUrl = `http://localhost:3009/sensor`;
+    console.log(sensorData);
 
-      const response = await fetch(fetchUrl, {
-        method: formMode === "edit" ? "PUT" : "POST",
-        body: JSON.stringify(sensorData),
-        headers: { "Content-Type": "application/json" },
-      });
+    if (formMode === "add") sendPostRequest(sensorData);
+    if (formMode === "edit") sendPutRequest(sensorData.result);
 
-      if (!response.ok) {
-        throw new Error("Request failed!");
-      }
-
-      const data = await response.json();
-    } catch (err: any) {
-      setError(err.message || "Something went wrong!");
-    }
-    setIsLoading(false);
+    if (postStatus === "completed" || putStatus === "completed")
+      setIsLoading(false);
+    if (postApiError || putApiError) setError(error);
   };
 
   const submitHandler = (event: FormEvent) => {
@@ -121,6 +120,15 @@ const SensorForm = () => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    console.log("postStatus, putStatus:", postStatus, putStatus);
+    if (
+      (postStatus === "completed" || putStatus === "completed") &&
+      !(postApiError || putApiError)
+    )
+      navigate("/dashboard");
+  }, [postStatus, putStatus, postApiError, putApiError]);
 
   return (
     <div className="card">
