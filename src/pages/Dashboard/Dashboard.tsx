@@ -5,54 +5,23 @@ import { Button } from "primereact/button";
 import { FaVideo, FaUsers, FaExclamationCircle } from "react-icons/fa";
 import SensorList from "../../components/parts/Sensors/SensorList";
 import SensorTemperatures from "../../components/parts/Charts/SensorTemperatures/SensorTemperatures";
-import { DEVICESURL } from "../../constants/global";
 import Spinner from "../../components/partials/Spinner";
 import ErrorStatus from "../../components/partials/ErrorStatus";
+import useHttp from "../../hooks/use-http";
+import { getAllSensors } from "../../lib/api";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [sensors, setSensors] = useState<any[]>([]);
-  const [error, setError] = useState(null);
-  const [sensorsCount, setSensorCounts] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Ensure that the function is not created unnecessarily using useCallback
-  const fetchSensorDataHandler = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(DEVICESURL);
-
-      if (!response.ok) {
-        throw Error("Something went wrong!");
-      }
-      const data = await response.json();
-      const results = await data.results;
-
-      const loadedSensors = [];
-      for (const key in results) {
-        loadedSensors.push({
-          device_id: results[key].device_id,
-          last_online: results[key].last_online,
-          last_temp: results[key].last_temp,
-          location: results[key].location,
-        });
-      }
-
-      setSensors(loadedSensors);
-      setIsLoading(false);
-      setSensorCounts(data.paging.count);
-    } catch (err: any) {
-      setIsLoading(false);
-      setError(err.message);
-    }
-    setIsLoading(false);
-  }, []);
+  const {
+    sendRequest,
+    status,
+    error: apiError,
+    data: sensors,
+  } = useHttp(getAllSensors, true);
 
   useEffect(() => {
-    fetchSensorDataHandler();
-  }, []);
+    sendRequest();
+  }, [sendRequest]);
 
   const headerChart = (
     <p
@@ -88,19 +57,20 @@ const Dashboard = () => {
   );
 
   let listContent = <div>Found no sensors.</div>;
+
   const loadingStatus = (onContent: boolean) => (
     <Spinner onContent={onContent} />
   );
 
-  if (sensors?.length > 0) {
-    listContent = <SensorList items={sensors} />;
+  if (sensors?.loadedSensors?.length > 0) {
+    listContent = <SensorList items={sensors.loadedSensors} />;
   }
 
-  if (error) {
-    listContent = <ErrorStatus onContent={true} message={error} />;
+  if (apiError) {
+    listContent = <ErrorStatus onContent={true} message={apiError} />;
   }
 
-  if (isLoading) {
+  if (status === "pending") {
     listContent = loadingStatus(true);
   }
 
@@ -114,9 +84,9 @@ const Dashboard = () => {
           >
             <FaVideo />
             <h4>TOTAL SENSOR</h4>
-            {!error && !isLoading && sensorsCount}
-            {isLoading && loadingStatus(false)}
-            {error && <ErrorStatus onContent={false} message={error} />}
+            {!apiError && status !== "pending" && sensors.count}
+            {status === "pending" && loadingStatus(false)}
+            {apiError && <ErrorStatus onContent={false} message={apiError} />}
           </div>
           <div
             className="flex-1 font-bold text-center p-4 border-round mx-4"

@@ -8,18 +8,17 @@ export async function getAllSensors() {
     throw new Error(data.message || "Could not fetch sensors.");
   }
 
-  const transformedSensors = [];
-
-  for (const key in data) {
-    const sensorObj = {
-      id: key,
-      ...data[key],
-    };
-
-    transformedSensors.push(sensorObj);
+  const loadedSensors = [];
+  for (const key in data.results) {
+    loadedSensors.push({
+      device_id: data.results[key].device_id,
+      last_online: data.results[key].last_online,
+      last_temp: data.results[key].last_temp,
+      location: data.results[key].location,
+    });
   }
 
-  return transformedSensors;
+  return { loadedSensors, count: data.paging.count };
 }
 
 export async function getSingleSensor(sensorId: any) {
@@ -56,7 +55,6 @@ export async function addSensor(sensorData: any) {
 }
 
 export async function updateSensor(sensorData: any) {
-  console.log("in aop:", sensorData);
   const response = await fetch(`${API_DOMAIN}/sensor/${sensorData.device_id}`, {
     method: "PUT",
     body: JSON.stringify(sensorData),

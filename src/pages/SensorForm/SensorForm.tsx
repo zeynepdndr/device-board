@@ -73,8 +73,6 @@ const SensorForm = () => {
     setIsLoading(true);
     setError(null);
 
-    console.log(sensorData);
-
     if (formMode === "add") sendPostRequest(sensorData);
     if (formMode === "edit") sendPutRequest(sensorData.result);
 
@@ -122,7 +120,6 @@ const SensorForm = () => {
   }, []);
 
   useEffect(() => {
-    console.log("postStatus, putStatus:", postStatus, putStatus);
     if (
       (postStatus === "completed" || putStatus === "completed") &&
       !(postApiError || putApiError)

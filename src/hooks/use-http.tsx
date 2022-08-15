@@ -1,7 +1,6 @@
 import { useReducer, useCallback } from "react";
 
 function httpReducer(state: any, action: any) {
-  console.log("action", action);
   if (action.type === "SEND") {
     return {
       data: null,
@@ -38,7 +37,6 @@ function useHttp(requestFunction: Function, startWithPending = false) {
 
   const sendRequest = useCallback(
     async function (requestData: any) {
-      console.log("here");
       dispatch({ type: "SEND" });
       try {
         const responseData = await requestFunction(requestData);

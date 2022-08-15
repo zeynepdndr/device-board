@@ -7,7 +7,6 @@ import TemperatureDaily from "../../components/parts/Charts/TemperatureDaily/Tem
 import SystemLog from "../../components/parts/SystemLog/SystemLog";
 import Activity from "../../components/parts/Activity/Activity";
 import Spinner from "../../components/partials/Spinner";
-import { DEVICEURL } from "../../constants/global";
 import ErrorStatus from "../../components/partials/ErrorStatus";
 
 const SensorDetail = () => {
@@ -20,16 +19,16 @@ const SensorDetail = () => {
 
   const getSensorData = () => {
     setIsLoading(true);
-    fetch(DEVICEURL + `${deviceId} `)
-      .then((res) => res.json())
-      .then((json) => {
-        setSensorData(json.result);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        setError(err.message);
-      });
+    // fetch(DEVICEURL + `${deviceId} `)
+    //   .then((res) => res.json())
+    //   .then((json) => {
+    //     setSensorData(json.result);
+    //     setIsLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     setIsLoading(false);
+    //     setError(err.message);
+    //   });
   };
 
   useEffect(() => {

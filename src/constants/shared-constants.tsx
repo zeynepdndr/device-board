@@ -35,6 +35,3 @@ export const enum EVENT_DEVICE {
   LOW_POWER = "LOW POWER",
   REQUEST_TIMEOUT = "REQUEST TIMEOUT",
 }
-{
-  /* Assumed there is a typo*/
-}

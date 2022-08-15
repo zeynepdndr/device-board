@@ -9,7 +9,6 @@ import {
 import { Card } from "primereact/card";
 import Spinner from "../../partials/Spinner";
 import ErrorStatus from "../../partials/ErrorStatus";
-// import { EVENT_DEVICE } from "../../../constants/shared-constants";
 
 const Activity = ({ deviceId }: { deviceId: any }) => {
   const [sensorStats, setSensorStats] = useState([]);
