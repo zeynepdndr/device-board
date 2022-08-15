@@ -1,155 +1,53 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Chart } from "primereact/chart";
 import { unixTimeToDate, sortByTime } from "../../../../utils/DateUtil";
 import Spinner from "../../../partials/Spinner";
 import ErrorStatus from "../../../partials/ErrorStatus";
+import { getSensorStats } from "../../../../lib/api";
+import useHttp from "../../../../hooks/use-http";
 
 const SensorTemperatures = () => {
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadedStatsTime_1, setLoadedStatsTime_1] = useState<any[]>([]);
-  const [loadedStatsTemp_1, setLoadedStatsTemp_1] = useState<any[]>([]);
-  const [loadedStatsTime_2, setLoadedStatsTime_2] = useState<any[]>([]);
-  const [loadedStatsTemp_2, setLoadedStatsTemp_2] = useState<any[]>([]);
-  const [loadedStatsTime_3, setLoadedStatsTime_3] = useState<any[]>([]);
-  const [loadedStatsTemp_3, setLoadedStatsTemp_3] = useState<any[]>([]);
-  const [data, setData] = useState<any[]>([]);
+  const { sendRequest, status, error, data } = useHttp(getSensorStats, true);
   const [lineData, setLineData] = useState<any>();
 
   // Set datapoint values to draw chart.
-  // @TODO: Make it dynamic, it should create lines regarding api response not 3 anytime
   const dataPointValuesHandler = async () => {
-    const loadedStatsTimePoints_1 = [];
-    const loadedStatsTempPoints_1 = [];
+    const linePoints: any = [];
 
-    const sortedByTime_1 = data[0]?.stats.sort(sortByTime);
+    for (const key in data) {
+      const sortedStatsByTime = data[key]?.stats.sort(sortByTime);
+      const loadedStatsTimePoints = sortedStatsByTime?.map((i: any) =>
+        unixTimeToDate(i.time)
+      );
+      const loadedStatsTempPoints = sortedStatsByTime?.map((i: any) => i.temp);
 
-    for (const key in sortedByTime_1) {
-      loadedStatsTimePoints_1.push(unixTimeToDate(sortedByTime_1[key].time));
-      loadedStatsTempPoints_1.push(sortedByTime_1[key].temp);
-    }
-    setLoadedStatsTemp_1(loadedStatsTempPoints_1);
-    setLoadedStatsTime_1(loadedStatsTempPoints_1);
+      linePoints.push([loadedStatsTempPoints, loadedStatsTimePoints]);
 
-    ///////////////////////////////////////////7
-
-    const loadedStatsTimePoints_2 = [];
-    const loadedStatsTempPoints_2 = [];
-
-    const sortedByTime_2 = data[1]?.stats.sort(sortByTime);
-
-    for (const key in sortedByTime_2) {
-      loadedStatsTimePoints_2.push(unixTimeToDate(sortedByTime_2[key].time));
-      loadedStatsTempPoints_2.push(sortedByTime_2[key].temp);
-    }
-    setLoadedStatsTemp_2(loadedStatsTempPoints_2);
-    setLoadedStatsTime_2(loadedStatsTempPoints_2);
-
-    ///////////////////////////////////////////7
-
-    const loadedStatsTimePoints_3 = [];
-    const loadedStatsTempPoints_3 = [];
-
-    const sortedByTime_3 = data[2]?.stats.sort(sortByTime);
-
-    for (const key in sortedByTime_2) {
-      loadedStatsTimePoints_3.push(unixTimeToDate(sortedByTime_3[key].time));
-      loadedStatsTempPoints_3.push(sortedByTime_3[key].temp);
-    }
-    setLoadedStatsTemp_3(loadedStatsTempPoints_3);
-    setLoadedStatsTime_3(loadedStatsTempPoints_3);
-
-    ///////////////////////////////////////////7
-
-    setLineData({
-      labels: loadedStatsTime_1,
-      datasets: [
-        {
-          label: data && data[0] != undefined ? data[0].device_id : "default",
-          data: loadedStatsTemp_1,
+      const datasets = linePoints.map((line: any, index: number) => {
+        return {
+          label: data[index] != undefined ? data[index].device_id : "default",
+          data: line[0],
           fill: false,
-          borderColor: "#42A5F5",
+          borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
           tension: 0.4,
-        },
-        {
-          label: data && data[1] != undefined ? data[1].device_id : "default",
-          data: loadedStatsTemp_2,
-          fill: false,
-          borderColor: "#00bb7e",
-          tension: 0.4,
-        },
-        {
-          label: data && data[2] != undefined ? data[2].device_id : "default",
-          data: loadedStatsTemp_3,
-          fill: false,
-          borderColor: "#ff5753",
-          tension: 0.4,
-        },
-      ],
-    });
-  };
+        };
+      });
 
-  const getSensorsStats = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch("http://localhost:3009/sensor/stats");
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-
-      const data = await response.json();
-      setData(data.results);
-    } catch (error: any) {
-      setError(error.message);
+      setLineData({
+        labels: loadedStatsTimePoints,
+        datasets: datasets,
+      });
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
-    getSensorsStats();
-  }, []);
+    sendRequest();
+  }, [sendRequest]);
 
+  console.log("etesg", lineData);
   useEffect(() => {
     dataPointValuesHandler();
   }, [data]);
-
-  useEffect(() => {
-    setLineData({
-      labels: loadedStatsTime_1,
-      datasets: [
-        {
-          label: data && data[0] != undefined ? data[0].device_id : "default",
-          data: loadedStatsTemp_1,
-          fill: false,
-          borderColor: "#42A5F5",
-          tension: 0.4,
-        },
-        {
-          label: data && data[1] != undefined ? data[1].device_id : "default",
-          data: loadedStatsTemp_2,
-          fill: false,
-          borderColor: "#00bb7e",
-          tension: 0.4,
-        },
-        {
-          label: data && data[2] != undefined ? data[2].device_id : "default",
-          data: loadedStatsTemp_3,
-          fill: false,
-          borderColor: "#ff5753",
-          tension: 0.4,
-        },
-      ],
-    });
-  }, [
-    loadedStatsTime_1,
-    loadedStatsTemp_1,
-    loadedStatsTemp_2,
-    loadedStatsTime_2,
-    loadedStatsTime_3,
-    loadedStatsTemp_3,
-  ]);
 
   const getLightTheme = () => {
     let basicOptions = {
@@ -203,7 +101,7 @@ const SensorTemperatures = () => {
     chartContent = <ErrorStatus onContent={true} message={error} />;
   }
 
-  if (isLoading) {
+  if (status === "pending") {
     chartContent = loadingStatus(true);
   }
 

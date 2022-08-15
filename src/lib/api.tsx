@@ -85,18 +85,7 @@ export async function getSensorStats() {
     throw new Error(data.message || "Could not fetch sensors.");
   }
 
-  const transformedSensorStats = [];
-
-  for (const key in data) {
-    const sensorObj = {
-      id: key,
-      ...data[key],
-    };
-
-    transformedSensorStats.push(sensorObj);
-  }
-
-  return transformedSensorStats;
+  return data.results;
 }
 
 export async function getSensorStatsWeekly(sensorId: any) {
