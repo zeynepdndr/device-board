@@ -44,7 +44,6 @@ const SensorTemperatures = () => {
     sendRequest();
   }, [sendRequest]);
 
-  console.log("etesg", lineData);
   useEffect(() => {
     dataPointValuesHandler();
   }, [data]);

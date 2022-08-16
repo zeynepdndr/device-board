@@ -111,12 +111,7 @@ export async function getSensorStatsWeeklyAvg(sensorId: any) {
     );
   }
 
-  const loadedStats = {
-    id: sensorId,
-    ...data,
-  };
-
-  return loadedStats;
+  return data.results;
 }
 
 export async function getSensorLogs(sensorId: any) {

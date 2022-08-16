@@ -27,7 +27,6 @@ const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
       linePoints.push([loadedStatsTempPoints, loadedStatsTimePoints]);
 
       const datasets = linePoints.map((line: any, index: number) => {
-        console.log("deviceId", deviceId);
         return {
           label: deviceId,
           data: line[0],
