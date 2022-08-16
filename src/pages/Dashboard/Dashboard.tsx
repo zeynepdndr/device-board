@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { FaVideo, FaUsers, FaExclamationCircle } from "react-icons/fa";
-import SensorList from "../../components/parts/Sensors/SensorList";
+import SensorList from "../../components/parts/SensorList/SensorList";
 import SensorTemperatures from "../../components/parts/Charts/SensorTemperatures/SensorTemperatures";
 import Spinner from "../../components/partials/Spinner";
 import ErrorStatus from "../../components/partials/ErrorStatus";

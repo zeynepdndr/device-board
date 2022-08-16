@@ -122,10 +122,5 @@ export async function getSensorLogs(sensorId: any) {
     throw new Error(data.message || "Could not fetch sensor logs.");
   }
 
-  const loadedLogs = {
-    id: sensorId,
-    ...data,
-  };
-
-  return loadedLogs;
+  return data.results;
 }
