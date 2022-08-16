@@ -96,12 +96,7 @@ export async function getSensorStatsWeekly(sensorId: any) {
     throw new Error(data.message || "Could not fetch sensor stats weekly.");
   }
 
-  const loadedStats = {
-    id: sensorId,
-    ...data,
-  };
-
-  return loadedStats;
+  return data;
 }
 
 export async function getSensorStatsWeeklyAvg(sensorId: any) {

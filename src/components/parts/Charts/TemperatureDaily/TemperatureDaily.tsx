@@ -1,102 +1,56 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Chart } from "primereact/chart";
-
 import { unixTimeToDate, sortByTime } from "../../../../utils/DateUtil";
 import Spinner from "../../../partials/Spinner";
 import ErrorStatus from "../../../partials/ErrorStatus";
+import { getSensorStatsWeekly } from "../../../../lib/api";
+import useHttp from "../../../../hooks/use-http";
 
 const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadedStatsTime_1, setLoadedStatsTime_1] = useState<any[]>([]);
-  const [loadedStatsTemp_1, setLoadedStatsTemp_1] = useState<any[]>([]);
-  const [data, setData] = useState<any[]>([]);
+  const { sendRequest, status, error, data } = useHttp(
+    getSensorStatsWeekly,
+    true
+  );
+  const [lineData, setLineData] = useState<any>();
 
   // Set datapoint values to draw chart.
-  // @TODO: Make it dynamic, it should create lines regarding api response not 1 anytime
   const dataPointValuesHandler = () => {
-    const loadedStatsTimePoints_1 = [];
-    const loadedStatsTempPoints_1 = [];
+    const linePoints: any = [];
 
-    const sortedByTime_1 = data?.sort(sortByTime);
+    for (const key in data) {
+      const sortedStatsByTime = data?.results.sort(sortByTime);
+      const loadedStatsTimePoints = sortedStatsByTime?.map((i: any) =>
+        unixTimeToDate(i.time)
+      );
+      const loadedStatsTempPoints = sortedStatsByTime?.map((i: any) => i.temp);
 
-    for (const key in sortedByTime_1) {
-      loadedStatsTimePoints_1.push(unixTimeToDate(sortedByTime_1[key].time));
-      loadedStatsTempPoints_1.push(sortedByTime_1[key].temp);
-    }
-    setLoadedStatsTemp_1(loadedStatsTempPoints_1);
-    setLoadedStatsTime_1(loadedStatsTempPoints_1);
+      linePoints.push([loadedStatsTempPoints, loadedStatsTimePoints]);
 
-    setBasicData({
-      labels: loadedStatsTime_1,
-      datasets: [
-        {
-          label: data && data[0] != undefined ? data[0].device_id : "default",
-          data: loadedStatsTemp_1,
+      const datasets = linePoints.map((line: any, index: number) => {
+        console.log("deviceId", deviceId);
+        return {
+          label: deviceId,
+          data: line[0],
           fill: false,
-          borderColor: "#42A5F5",
+          borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
           tension: 0.4,
-        },
-      ],
-    });
+        };
+      });
+
+      setLineData({
+        labels: loadedStatsTimePoints,
+        datasets: datasets,
+      });
+    }
   };
 
-  const [basicData, setBasicData] = useState({
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "First Dataset",
-        data: [65, 59, 80, 81, 56, 55, 40],
-        fill: false,
-        borderColor: "#42A5F5",
-        tension: 0.4,
-      },
-    ],
-  });
-
-  const getSensorsStats = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(
-        `http://localhost:3009/sensor/${deviceId}/stats/weekly`
-      );
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-
-      const data = await response.json();
-      setData(data.results);
-      setIsLoading(false);
-    } catch (error: any) {
-      setIsLoading(false);
-      setError(error.message);
-    }
-  }, []);
-
   useEffect(() => {
-    getSensorsStats();
-  }, []);
+    sendRequest(deviceId);
+  }, [sendRequest]);
 
   useEffect(() => {
     dataPointValuesHandler();
   }, [data]);
-
-  useEffect(() => {
-    setBasicData({
-      labels: loadedStatsTime_1,
-      datasets: [
-        {
-          label: data && data[0] != undefined ? data[0].device_id : "default",
-          data: loadedStatsTemp_1,
-          fill: false,
-          borderColor: "#42A5F5",
-          tension: 0.4,
-        },
-      ],
-    });
-  }, [loadedStatsTime_1, loadedStatsTemp_1]);
 
   const getLightTheme = () => {
     let basicOptions = {
@@ -140,15 +94,13 @@ const TemperatureDaily = ({ deviceId }: { deviceId: any }) => {
     <Spinner onContent={onContent} />
   );
 
-  if (data.length > 0) {
-    chartContent = (
-      <Chart type="line" data={basicData} options={basicOptions} />
-    );
+  if (data?.results?.length > 0) {
+    chartContent = <Chart type="line" data={lineData} options={basicOptions} />;
   }
   if (error) {
     chartContent = <ErrorStatus onContent={true} message={error} />;
   }
-  if (isLoading) {
+  if (status === "pending") {
     chartContent = loadingStatus(true);
   }
 

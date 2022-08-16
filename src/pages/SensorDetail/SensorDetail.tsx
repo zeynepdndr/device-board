@@ -13,7 +13,6 @@ import { getSingleSensor } from "../../lib/api";
 
 const SensorDetail = () => {
   const param = useParams();
-  const { deviceId } = param;
 
   const { sendRequest, status, error, data } = useHttp(getSingleSensor, true);
 
@@ -70,12 +69,12 @@ const SensorDetail = () => {
             </div>
           </SplitterPanel>
           <SplitterPanel>
-            <WeeklyAverageTemp deviceId={deviceId?.toLocaleString()} />
+            <WeeklyAverageTemp deviceId={param.device_id?.toLocaleString()} />
           </SplitterPanel>
         </Splitter>
       </div>
       <div className="card  mb-4 ">
-        <TemperatureDaily deviceId={deviceId} />
+        <TemperatureDaily deviceId={param.device_id} />
       </div>
       <div>
         <div className="flex">
@@ -87,7 +86,7 @@ const SensorDetail = () => {
               >
                 SYSTEM LOG
               </p>
-              <SystemLog deviceId={deviceId} />
+              <SystemLog deviceId={param.device_id} />
             </div>
           </div>
           <div className="flex-1">
@@ -98,7 +97,7 @@ const SensorDetail = () => {
               >
                 ACTIVITY
               </p>
-              <Activity deviceId={deviceId} />
+              <Activity deviceId={param.device_id} />
             </div>
           </div>
         </div>
